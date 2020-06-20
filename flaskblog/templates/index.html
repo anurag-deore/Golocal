@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Hack Jaipur !</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+  </script>
+
+  <style>
+    body {
+      font-family: 'Museo Sans Rounded 300', sans-serif;
+    }
+
+    main {
+      position: relative;
+      height: 90vh;
+    }
+
+    .bg {
+      position: absolute;
+      height: 70vh;
+      top: 0;
+      z-index: -3;
+    }
+
+    .bg img {
+      transform: rotateY(180deg);
+      filter: brightness(35%);
+      height: 90vh;
+      width: 100vw;
+    }
+
+    nav {
+      position: absolute;
+      top: 0;
+      height: 70px;
+      background-image: linear-gradient(to bottom,
+          rgb(0, 0, 0),
+          rgba(0, 0, 0, 0) 100%);
+    }
+
+    .heroinfo {
+      height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 100px;
+      padding-top: 50px;
+    }
+
+    .heroinfo p {
+      font-size: 6rem;
+      font-weight: 300;
+      line-height: 1.2;
+    }
+
+    .getstarted {
+      text-decoration: none;
+      border: 2px solid white;
+      width: fit-content;
+      padding: 10px;
+      color: #fff;
+      margin-top: 10px;
+      font-size: 1.2rem;
+    }
+
+    .nav-link {
+      font-size: larger;
+    }
+
+    .getstarted:hover {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.712);
+    }
+
+    .ptext {
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    @media screen and (max-width: 767px) {
+      main {
+        height: 50vh;
+      }
+
+      .heroinfo {
+        padding-left: 50px;
+      }
+
+      .heroinfo p {
+        font-size: 2.5rem;
+        font-weight: 300;
+        line-height: 1;
+      }
+
+      .heroinfo h1,
+      a {
+        font-size: 1.5rem;
+        font-weight: 300;
+        line-height: 0.8;
+      }
+
+      .bg img {
+        filter: brightness(35%);
+        height: 50vh;
+        width: 100%;
+      }
+
+      .heroinfo {
+        height: 30vh;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <main>
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <span class="navbar-brand active">Hack Jaipur !</span>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ml-auto">
+          <a class="nav-item nav-link" href="{{ url_for('register') }}">SignUp</a>
+          <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+        </div>
+      </div>
+    </nav>
+    <div class="heroinfo text-light">
+      <p class="display-1">JOBLO</p>
+      <h1>Jobs for everyone. </h1>
+      <a class="getstarted" href="{{ url_for('register') }}"> Get Started </a>
+    </div>
+    <div class="bg">
+      <img src="../static/collage1.jpg" alt="">
+    </div>
+  </main>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pills">
+
+    </div>
+    <input type="text" id="check">
+    <button class="btn btn-info" onclick="getfn()">add</button>
+  </div>
+  <script>
+    $(document).ready(function () {
+      $('.carousel').carousel({
+        interval: 5000,
+        pause: false,
+      });
+    });
+    var listt = []
+
+    function end(ind) {
+      listt.splice(ind, 1);
+      render();
+    }
+
+    function getfn() {
+      var j = $('#check').val();
+      listt.push(j)
+      render();
+      $('#check').val('')
+    }
+
+    function render() {
+      var m = '';
+      for (let [index, val] of listt.entries()) {
+        m += `
+        <span class="ptext badge badge-primary ">${val}
+        &nbsp;&nbsp; <span onclick="end('${index}')">x</span>  
+        </span>
+        `;
+      }
+      $('.pills').html(m);
+    }
+  </script>
+</body>
+
+</html>

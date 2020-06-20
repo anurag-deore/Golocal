@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="alert alert-success d-none" id="myalert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="d-flex row align-items-center">
+    <div class="col-md-2 col-5 col-lg-2 offset-lg-1">
+        <img class=" account-img shadow-sm img-thumbnail" src="{{image_file}}">
+    </div>
+    <div class="col-md-10 col-7 col-lg-9">
+        <h4>{{current_user.username}}</h4>
+        <p>{{ current_user.email }} <span class="badge badge-pill badge-primary">{{ current_user.category }}</span></p>
+    </div>
+</div>
+<hr>
+<div class="offset-md-1 col-md-9 offset-0">
+    <h3 class=" mb-4 ">Edit Preferences</h3>
+    <p class="pt-3 text-muted border-top" onclick="change('geninfo')" data-toggle="collapse" data-target="#geninfo"
+        aria-expanded="false" aria-controls="geninfo">
+        <span>General Info</span>
+        <span class="float-right plusgeninfo">&#x2b;</span>
+        <span class="float-right minusgeninfo d-none">&#x2212;</span>
+    </p>
+    <div class="collapse" id="geninfo">
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="form-group row">
+                {{ form.username.label(class="col-form-label col-sm-2 ") }}
+                <div class="col-sm-10">
+                    {% if form.username.errors %}
+                    {{ form.username(class="form-control is-invalid",**{'contenteditable ':"true"}), }}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.username(class="form-control ") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group row">
+                {{ form.email.label(class="col-form-label col-sm-2 ") }}
+                <div class="col-sm-10">
+
+                    {% if form.email.errors %}
+                    {{ form.email(class="form-control  is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.email(class="form-control ") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-form-label col-sm-2">
+                    Profile Photo
+                </div>
+                <div class="col-sm-10">
+                    {{ form.picture(class="form-control-file") }}
+                    {% if form.picture.errors %}
+                    {% for error in form.picture.errors %}
+                    <span class="text-danger">{{ error }}</span></br>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group text-left">
+                {{ form.submit(class="btn btn-dark") }}
+            </div>
+        </form>
+    </div>
+    <p class="text-muted border-top pt-3" onclick="change('skills')" data-toggle="collapse" data-target="#skills"
+        aria-expanded="false" aria-controls="skills">
+        Skills
+        <span class="float-right plusskills">&#x2b;</span>
+        <span class="float-right minusskills d-none">&#x2212;</span>
+    </p>
+    <div class="collapse" id="skills">
+        <input type="text" name="skills">
+        <div class="pills">
+
+        </div>
+        <input type="text" id="check">
+        <button id="check" onclick="getfn()" class="btn btn-dark">Update Skills</button>
+    </div>
+    <p class="border-top"></p>
+    <script>
+        function change(id) {
+            $('.plus' + id).toggleClass('d-none');
+            $('.minus' + id).toggleClass('d-none');
+        }
+        var listt = []
+
+        function end(ind) {
+            listt.splice(ind, 1);
+            render();
+        }
+
+        function getfn() {
+            var j = $('#check').val();
+            listt.push(j)
+            render();
+            $('#check').val('')
+        }
+
+        function render() {
+            var m = '';
+            for (let [index, val] of listt.entries()) {
+                m += `
+        <span class="ptext badge badge-primary ">${val}
+        &nbsp;&nbsp; <span onclick="end('${index}')">x</span>  
+        </span>
+        `;
+            }
+            $('.pills').html(m);
+            $('input[name="skills"]').val(listt.toString());
+        }
+    </script>
+    {% endblock content %}

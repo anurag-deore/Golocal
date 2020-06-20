@@ -1,0 +1,210 @@
+body {
+  font-family: "Inter", sans-serif;
+  /* font-family: "Museo Sans Rounded 300", sans-serif; */
+  font-weight: lighter;
+}
+.ptext {
+  font-size: 16px;
+  font-weight: lighter;
+  cursor: pointer;
+  margin: 2px;
+  padding: 5px;
+  color: purple !important;
+  background-color: rgb(235, 191, 235);
+}
+.pskilltext {
+  font-size: 12px;
+  font-weight: lighter;
+  cursor: pointer;
+  width: max-content;
+  margin: 2px;
+  color: rgb(133, 39, 136) !important;
+  background-color: rgb(241, 213, 241);
+}
+.dropdown-menu {
+  margin-top: 42px !important;
+  margin-right: -65px !important;
+}
+.stick-filter {
+  margin-top: 50px;
+}
+.account-img {
+  height: 100px;
+  width: 100px;
+}
+.text-theme a ,.text-theme{
+  color: rgb(154, 8, 235);
+  text-decoration: none;
+}
+.text-theme a:hover {
+  font-weight: 700;
+}
+
+.btn-outline-theme:hover,
+.btn-outline-theme:not(:disabled):not(.disabled).active,
+.btn-outline-theme:not(:disabled):not(.disabled):active,
+.show > .btn-outline-theme.dropdown-toggle {
+  border-color: rgb(154, 8, 235);
+  background-color: rgb(154, 8, 235);
+  color: floralwhite;
+}
+.btn-outline-theme:focus{
+  box-shadow: 0 0 0 0.2rem rgba(154, 8, 235,.5);
+}
+
+.btn-outline-theme {
+  color: rgb(154, 8, 235);
+  border-color: rgb(154, 8, 235);
+  text-decoration: none;
+}
+
+.custom-control-input:active {
+  box-shadow: 0 0 0 0.2rem rgba(154, 4, 255, 0.001);
+  background-color: #cb46f3;
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: #fff;
+  border-color: #cb46f3;
+  background-color: rgb(154, 4, 255);
+}
+
+.contactnow {
+  background-color: rgb(244, 227, 252);
+  font-size: 15px;
+  font-weight: bold;
+  padding: 5px;
+  color: rgb(154, 4, 255);
+}
+.contactnow:hover {
+  color: rgb(154, 8, 235);
+}
+.contactnow:active {
+  border: 0;
+  box-shadow: 0 0 0 0.2rem rgba(154, 4, 255, 0.001);
+}
+.contactnow:focus {
+  border: 0;
+  box-shadow: 0 0 0 0.2rem rgba(154, 4, 255, 0.3);
+  color: rgb(154, 4, 255);
+}
+.card-text {
+  font-size: 14px;
+  color: #666;
+}
+.card-img {
+  height: 65px;
+  width: 65px;
+  border-radius: 0.25rem !important;
+}
+.card-icon {
+  font-size: 18px !important;
+}
+.profile-img {
+  height: 40px;
+  width: 40px;
+  border-radius: 8px;
+  /* border: 1px solid white; */
+}
+.navbar-dark .navbar-brand:hover {
+  color: rgb(243, 206, 247);
+}
+.navbar-brand {
+  font-weight: 900;
+  font-size: 30px;
+}
+.navbar {
+  padding: 0.3rem 0.2rem 0.3rem 1rem;
+  background-color: rgb(120, 3, 133);
+  /* border-top-right-radius: 200px;
+  border-bottom-right-radius: 200px; */
+  margin-bottom: 25px;
+}
+.navbar-dark .nav-link {
+  font-size: large;
+  color: #fff;
+}
+.nav-link:hover {
+  color: #aaa;
+}
+.dropdown-toggle::before {
+  color: #fff;
+  margin-right: 0.255em;
+  margin-left: 0.255em;
+  transform: rotate(-90deg);
+}
+.nav-pills .nav-item {
+  width: 15%;
+}
+
+.sidebar-btn {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+  .nav-pills .nav-item {
+    width: 50%;
+  }
+  .navbar-brand {
+    font-size: 20px;
+  }
+  .card-img {
+    height: 50px;
+    width: 50px;
+    border-radius: 0.25rem !important;
+  }
+  .card-icon {
+    font-size: 16px !important;
+  }
+  .descrip,
+  .prof-menu-text {
+    font-size: 15px;
+  }
+  .sidebar-btn {
+    display: block;
+  }
+  .sidebar-item {
+    display: block;
+    background-color: antiquewhite;
+    padding: 8px;
+    margin-top: 5px;
+  }
+  .mobileMenu hr {
+    height: 0.3px;
+    background-color: rgb(202, 201, 201);
+    margin: 0;
+  }
+  .mobileMenu a {
+    text-decoration: none;
+    color: #111;
+  }
+  .mobileMenu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    margin-top: 0;
+    width: 300px;
+    transform: translateX(-100%);
+    z-index: 1023;
+    transition: all ease 0.25s;
+    overflow: hidden;
+  }
+  .mobileMenu.open {
+    transform: translateX(0);
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1022;
+    left: 0;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+  }
+  .overlay.open {
+    display: block;
+  }
+}

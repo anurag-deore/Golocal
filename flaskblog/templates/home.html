@@ -1,0 +1,298 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  #myInput {
+
+    margin-bottom: 12px;
+    /* Add some space below the input */
+  }
+
+  #myUL {
+    /* Remove default list styling */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #myUL li a {
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    color: black;
+  }
+
+  #myUL li a:hover:not(.header) {
+    background-color: #eee;
+    /* Add a hover effect to all links, except for headers */
+  }
+</style>
+<div class="row ">
+  <div class="col-md-8 col-12 mt-0 mt-md-4">
+    <div class="sea">
+      {% for post in posts %}
+      {% set list1 = post.skills.split(',') %}
+      <div class="p-3 mb-3 border rounded shadow-sm">
+        <div class="row pl-md-2">
+          <div class="col-9 col-sm-9 col-md-10">
+            <h5>{{post.username}} <small class="badge  badge-primary font-weight-light ">{{post.category}}</small> </h5>
+            <article class="text-theme"><a href="{{ url_for('user_posts', username=post.username) }}">{{post.email}}</a>
+            </article>
+          </div>
+          <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
+            <img src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}" class=" card-img"
+              alt="user pic">
+          </div>
+        </div>
+
+        <div class="pt-md-0 pt-2 card-text  d-flex align-items-center">
+          <span
+            class="material-icons material-icons-outlined card-icon pr-2 text-muted">location_on</span>{{post.location}}
+        </div>
+
+        <div class="row mt-3 ">
+          <p class="m-0 col-3 col-sm-3 col-md-2 ">Skills</p>
+          <div class="col-8">
+            <div class="row">
+              {% for i in list1 %}
+              <span class="pskilltext badge col-auto">{{i}}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+
+        <p class="py-2 pr-0">
+          <button href="" class="contactnow btn float-right">Contact Now</button>
+        </p>
+
+      </div>
+
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-md-4 ">
+    <div class="pt-4 sticky-top ">
+      <div class="border p-3 rounded shadow-sm">
+        <h4>Filters</h4>
+        <hr>
+        <p>Location : Kalyan <a href="">change</a> </p>
+        <input name="location" type="text" class="form-control form-control-sm" placeholder="e.g. Delhi, Mumbai">
+        <br>
+        <p>Filter Skills</p>
+        <div class="showpill"></div>
+        <form action="" method="POST" id="skillform">
+          <input type="text" name="filterof" class="d-none">
+        </form>
+        <input type="text" name="filterkskill" id="myInput" class="form-control" onkeyup="myFunction()"
+          placeholder="Select skills. Eg: Mechanic, Electrician">
+        <div class="opts" style="height: auto;max-height: 250px; overflow-y: scroll;">
+        </div>
+      </div>
+      <br>
+      <!-- <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="customSwitch1">
+        <label class="custom-control-label" for="customSwitch1"> <span class="float-right">For Women </span></label>
+      </div> -->
+    </div>
+  </div>
+</div>
+</div>
+<!-- <div class="row">
+  <div class="col-lg-3 ">
+    <div class="pt-4 sticky-top">
+      <div class="border p-3 rounded ">
+        <h4>Filters</h4>
+        <hr>
+        <p>Location</p>
+        <input name="location" type="text" class="form-control form-control-sm" placeholder="e.g. Delhi, Mumbai">
+        <br>
+        <p>Skills</p>
+        <input type="text" name="skillsearch" class="form-control form-control-sm" placeholder="Mechanic, Electrician">
+        <br>
+        <div class="custom-control custom-switch">
+          <input type="checkbox" class="custom-control-input" id="customSwitch1">
+          <label class="custom-control-label" for="customSwitch1"> <span class="float-right">For Women </span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9 mt-4" >
+    <div class="pt- bg-info" style="height: 2500px;">
+      <div class="p-3">
+        Normal data enter code here
+      </div>
+    </div>
+  </div>
+</div> -->
+<!-- <a href="{{url_for('new_post')}}"
+  style="position: fixed; bottom: 70px;right: 70px;border-radius: 200px;padding: 5px 10px;"
+  class=" shadow-lg btn btn-primary">
+  + New Job
+</a> -->
+<script>
+  function sendajax() {
+    var sendskills = $('input[name="filterof"]').val();
+    $.ajax({
+      type: "POST",
+      url: "{{ url_for('home')}}",
+      dataType: "json",
+      data: {
+        sendskills: sendskills
+      },
+      success: function (response) {
+        response.sort(dynamicsort("distance", "asc"))
+        console.log(response)
+        var g = ''
+        response.forEach(element => {
+          g += `   <div class="p-3 mb-3 border rounded shadow-sm">
+                    <div class="row pl-md-2">
+                      <div class="col-9 col-sm-9 col-md-10">
+                        <h5>${element.username} <small class="badge  badge-primary font-weight-light ">${element.category}</small> </h5>
+                        <article class="text-theme"><a
+                            href="${'{'+'{'} url_for('user_posts', username=${element.username}) }}">${element.email}}</a>
+                        </article>
+                      </div>
+                      <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
+                        <img src="../static/profile_pics/${element.image_file}" class=" card-img"
+                          alt="user pic">
+                      </div>
+                    </div>
+                    <div class="pt-md-0 pt-2 card-text  d-flex align-items-center">
+                      <span
+                        class="material-icons material-icons-outlined card-icon pr-2 text-muted">location_on</span>${element.location}}
+                    </div>
+                    <div class="row mt-3 ">
+                      <p class="m-0 col-3 col-sm-3 col-md-2 ">Skills</p>
+                      <div class="col-8">
+                        <div class="row"> `
+                        for (let i = 0; i < element.skills.length; i++) {
+                          g += `<span class="pskilltext badge col-auto">` + element.skills[i] + `</span>`;}
+
+                        g += `</div>
+                    </div>
+                    </div>
+                    <p class="py-2 pr-0">
+                      <button href="" class="contactnow btn float-right">Contact Now</button>
+                    </p>
+
+                  </div>
+`
+        });
+        $('.sea').html(g);
+      }
+    });
+  }
+
+
+  function dynamicsort(property, order) {
+    var sort_order = 1;
+    if (order === "desc") {
+      sort_order = -1;
+    }
+    return function (a, b) {
+      // a should come before b in the sorted order
+      if (a[property] < b[property]) {
+        return -1 * sort_order;
+        // a should come after b in the sorted order
+      } else if (a[property] > b[property]) {
+        return 1 * sort_order;
+        // a and b are the same
+      } else {
+        return 0 * sort_order;
+      }
+    }
+  }
+
+
+
+
+
+
+  var notaddedskills = [];
+  var userskills = []
+  var allskills = [
+    'ANDAMAN ', 'ANDHRA PRADESH', 'ARUNACHAL PRADESH', 'ASSAM', 'BIHAR', 'CHATTISGARH',
+    'CHANDIGARH', 'DAMAN AND DIU', 'DELHI',
+    'DADRA AND NAGAR HAVELI', 'GOA', 'GUJARAT', 'HIMACHAL PRADESH', 'HARYANA', 'JAMMU AND KASHMIR', 'JHARKHAND',
+    'KERALA', 'KARNATAKA', 'LAKSHADWEEP', 'MEGHALAYA', 'MAHARASHTRA', 'MANIPUR', 'MADHYA PRADESH', 'MIZORAM',
+    'NAGALAND', 'ORISSA', 'PUNJAB', 'PONDICHERRY', 'RAJASTHAN', 'SIKKIM', 'TAMIL NADU', 'TRIPURA',
+    'UTTARAKHAND',
+    'UTTAR PRADESH', 'WEST BENGAL', 'TELANGANA'
+  ]
+
+
+  function skills(userskills) {
+
+    notaddedskills = allskills.filter(function (obj) {
+      return userskills.indexOf(obj) == -1;
+    });
+    userskills.length <= 0 ? $('.showpill').html('') :
+      renderaddedskills(userskills)
+    notaddedskills.length <= 0 ? $('.opts').html('All skills already added !') :
+      renderNOTaddedskills(notaddedskills)
+  }
+
+  function renderaddedskills(userskills) {
+    var m = '';
+    var n = '';
+    for (let [index, val] of userskills.entries()) {
+      m += `<span class="ptext badge ">${val}&nbsp;&nbsp; <span onclick="end('${index}')">&#10539;</span></span>`;
+      n += `<span class="ptext badge ">${val}&nbsp;&nbsp;</span>`;
+    }
+    $('.showpill').html(m);
+  }
+
+  function renderNOTaddedskills(notaddedskills) {
+    var k = '<ul id="myUL">';
+    for (let [index, val] of notaddedskills.entries()) {
+      k += ` <li title="Add ${val}" onclick="getfn('${val}')"><a href="#">${val} </a></li>`;
+    }
+    k += '</ul>'
+    $('.opts').html(k);
+  }
+
+  function end(skillindex) {
+    userskills.splice(skillindex, 1)
+    $('input[name="filterof"]').val(userskills.toString());
+    skills(userskills)
+    sendajax();
+  }
+
+  function getfn(j) {
+    userskills.push(j)
+    $('input[name="filterof"]').val(userskills.toString());
+    skills(userskills)
+    $('#myInput').val('');
+    sendajax();
+  }
+
+
+  function myFunction() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById('myInput');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myUL");
+    li = ul.getElementsByTagName('li');
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < li.length; i++) {
+      a = li[i].getElementsByTagName("a")[0];
+      txtValue = a.textContent || a.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+
+  $(document).ready(function () {
+    var o = []
+    o == '' ? userskills = [] : userskills = o.split(",")
+    skills(userskills)
+  });
+</script>
+{% endblock content %}

@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1 class="mb-3">Posts by {{ user.username }} <small>({{posts.count() }}
+    {{'post' if posts.count() == 1 else 'posts' }})</small></h1>
+
+{% for post in posts %}
+<div class="p-3 mb-3 border rounded shadow-sm">
+  <div class="row pl-md-2">
+    <div class="col-9 col-sm-9 col-md-10">
+      <h5>{{post.title}}</h5>
+      <article class="text-theme"><a
+          href="{{ url_for('user_posts', username=post.author.username) }}">{{post.author.username}}</a>
+      </article>
+    </div>
+    <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
+      <img src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}" class=" card-img"
+        alt="user pic">
+    </div>
+  </div>
+
+  <div class="pt-md-0 pt-2 card-text  d-flex align-items-center">
+    <span class="material-icons material-icons-outlined card-icon pr-2 text-muted">location_on</span>{{post.location}}
+  </div>
+  <div class="d-sm-none d-block pt-3 card-text d-flex align-items-center">
+    <span
+      class="material-icons material-icons-outlined card-icon pr-2 text-muted">date_range</span>{{ post.date_posted.strftime('%d %B, %Y') }}
+  </div>
+
+  <div class="d-sm-flex flex-row pt-3 pl-md-2 align-items-center  text-muted">
+    <p class="m-0"> <span class="font-weight-bold">Description</span> <span class="d-sm-inline-flex d-none"> :
+        {{post.description}}</span></p>
+    <p class="m-0 d-sm-none d-block">{{post.description}}</p>
+  </div>
+
+  <div class="row pl-md-2 pt-3">
+
+    <div class="col-6 col-md-4 col-lg-3  card-text">
+      <div class="d-flex align-items-center justify-content-start pb-2">
+        <i class="material-icons material-icons-outlined card-icon pr-2">local_atm</i>
+        Pay
+      </div>
+      <p class="card-text"> &#8377; {{post.minsal}}k - {{post.maxsal}}k</p>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-3 card-text">
+      <div class="d-flex align-items-center justify-content-start pb-2">
+        <i class="material-icons material-icons-outlined card-icon pr-2">confirmation_number</i>
+        Applications
+      </div>
+      <p>{{'NA' if post.applications == 0 else post.applications}}</p>
+    </div>
+
+    <div class="col-4 col-md-4 col-lg-3 d-sm-block d-none card-text">
+      <div class="d-flex align-items-center justify-content-start pb-2">
+        <i class="material-icons material-icons-outlined card-icon pr-2">hourglass_empty</i>
+        Posted On
+      </div>
+      <p class="card-text">{{ post.date_posted.strftime('%d %B, %Y') }}</p>
+    </div>
+    {% if post.author == current_user %}
+    <div class="col-12  d-block">
+      <button type="button" class="float-right btn btn-outline-danger btn-sm m-1" data-toggle="modal"
+        data-target="#deleteModal">Delete</button>
+      <a class="btn float-right btn-outline-dark btn-sm mt-1 mb-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
+    </div>
+    {% endif %}
+  </div>
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="deleteModalLabel">Are you sure you want to delete this post?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+{% endblock content %}

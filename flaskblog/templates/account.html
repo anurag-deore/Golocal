@@ -1,0 +1,313 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    #myInput {
+
+        margin-bottom: 12px;
+        /* Add some space below the input */
+    }
+
+    #myUL {
+        /* Remove default list styling */
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #myUL li a {
+        border: 1px solid #ddd;
+        /* Add a border to all links */
+        margin-top: -1px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        /* Prevent double borders */
+        background-color: #f6f6f6;
+        /* Grey background color */
+        padding: 12px;
+        /* Add some padding */
+        text-decoration: none;
+        /* Remove default text underline */
+        font-size: 18px;
+        /* Increase the font-size */
+        color: black;
+    }
+
+    #myUL li a:hover:not(.header) {
+        background-color: #eee;
+        /* Add a hover effect to all links, except for headers */
+    }
+</style>
+<div class="alert alert-success d-none" id="myalert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="d-flex row align-items-center">
+    <div class="col-md-2 col-sm-3 col-5 col-lg-2 offset-lg-1">
+        <img class=" account-img shadow-sm img-thumbnail" src="{{image_file}}">
+    </div>
+    <div class="col-md-10 col-sm-9 col-7 col-lg-9 pl-2">
+        <h4>{{current_user.username}}</h4>
+        <p>{{ current_user.email }} <span class="badge badge-pill badge-primary">{{ current_user.category }}</span></p>
+    </div>
+</div>
+<hr>
+<div class="offset-md-1 col-md-9 pl-0  pr-0 offset-0">
+    <h3 class=" mb-4 ">Edit Preferences</h3>
+    <hr>
+    <p class="text-muted font-weight-bold">General Info</p>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group row">
+            {{ form.username.label(class="col-form-label col-sm-2 ") }}
+            <div class="col-sm-10">
+                {% if form.username.errors %}
+                {{ form.username(class="form-control is-invalid",**{'contenteditable ':"true"}), }}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.username(class="form-control ") }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-group row">
+            {{ form.email.label(class="col-form-label col-sm-2 ") }}
+            <div class="col-sm-10">
+
+                {% if form.email.errors %}
+                {{ form.email(class="form-control  is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email(class="form-control ") }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-form-label col-sm-2">
+                Profile Photo
+            </div>
+            <div class="col-sm-10 align-items-center d-flex">
+                {{ form.picture(class="form-control-file") }}
+                {% if form.picture.errors %}
+                {% for error in form.picture.errors %}
+                <span class="text-danger">{{ error }}</span></br>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                Location
+            </div>
+            <div class="col-sm-10">
+                <div class="float-right">
+                    <p style="cursor: pointer;color: rgb(154,4,255);" onclick="toggleLoc()">Change</p>
+                </div>
+                <span class="text-muted">{{ current_user.location }}</span>
+            </div>
+        </div>
+        <div class="form-group row pt-3 bg-light " style="display: none;" id="locinp">
+
+            {{ form.location.label(class="col-form-label col-sm-2 ") }}
+            <div class="col-sm-10">
+                {% if form.location.errors %}
+                {{ form.location(class="form-control  is-invalid",placeholder="Select City Eg: Kalyan" ,id="locateplaces" ) }}
+                <div class="invalid-feedback">
+                    {% for error in form.location.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.location(id="locateplaces" ,placeholder="Select City Eg: Kalyan" , class=" form-control ") }}
+                {% endif %}
+                {{ form.location_latlng(id="loclatlng" ,class="form-control invisible",style="margin-top:-20px") }}
+            </div>
+        </div>
+        <hr>
+        <p class="text-muted font-weight-bold">Skills</p>
+        <div class="form-group row">
+            <div class="col-sm-2">Current Skills</div>
+            <div class="col-sm-8 showpill">
+            </div>
+            <div class="col-sm-2 p-sm-0 px-3">
+                <button class="btn mt-sm-0 my-3 btn-outline-info btn-outline-theme btn-block" data-toggle="modal"
+                    data-target="#deleteModal" type="button">
+                    {{ 'Add' if current_user.skills == '' else 'Modify' }} skills</button>
+            </div>
+        </div>
+        {{ form.skills(class="d-none") }}
+        <div class="form-group text-left">
+            {{ form.submit(class="btn btn-dark") }}
+        </div>
+    </form>
+</div>
+<div class="modal fade " id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centred" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deleteModalLabel">Add skills to your profile.</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <div class="col-sm-4">Current Skills : </div>
+                    <div class="col-sm-8 pills">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-8 col-sm-10 pr-0">
+                        <input type="text" id="myInput" class="form-control" onkeyup="myFunction()" placeholder="Search for names..">
+                    </div>
+                    <div class="col-4 col-sm-2">
+                        <button  class="btn btn-secondary btn-block" data-dismiss="modal"> Done </button>
+                    </div>
+                </div>
+                <div class="opts">
+                </div>
+            </div>
+            <div class="p-3 d-flex align-items-center justify-content-between">
+                <small class="text-theme">*Click on update after adding or removing skills.</small>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/places.js@1.19.0"></script>
+<script>
+    var allskills = [
+        'ANDAMAN ', 'ANDHRA PRADESH', 'ARUNACHAL PRADESH', 'ASSAM', 'BIHAR', 'CHATTISGARH',
+        'CHANDIGARH', 'DAMAN AND DIU', 'DELHI',
+        'DADRA AND NAGAR HAVELI', 'GOA', 'GUJARAT', 'HIMACHAL PRADESH', 'HARYANA', 'JAMMU AND KASHMIR', 'JHARKHAND',
+        'KERALA', 'KARNATAKA', 'LAKSHADWEEP', 'MEGHALAYA', 'MAHARASHTRA', 'MANIPUR', 'MADHYA PRADESH', 'MIZORAM',
+        'NAGALAND', 'ORISSA', 'PUNJAB', 'PONDICHERRY', 'RAJASTHAN', 'SIKKIM', 'TAMIL NADU', 'TRIPURA',
+        'UTTARAKHAND',
+        'UTTAR PRADESH', 'WEST BENGAL', 'TELANGANA'
+    ]
+    var notaddedskills = [];
+    var userskills = []
+
+    $(document).ready(function () {
+        var o = '{{ form.skills.data }}';
+        o == '' ? userskills = [] : userskills = o.split(",")
+
+        skills(userskills)
+    });
+
+    function skills(userskills) {
+
+        notaddedskills = allskills.filter(function (obj) {
+            return userskills.indexOf(obj) == -1;
+        });
+        console.log(userskills);
+        userskills.length <= 0 ? $('.pills').html('No Skills added yet') :
+            renderaddedskills(userskills)
+        notaddedskills.length <= 0 ? $('.opts').html('All skills already added !') :
+            renderNOTaddedskills(notaddedskills)
+    }
+
+    function renderaddedskills(userskills) {
+        var m = '';
+        var n = '';
+        for (let [index, val] of userskills.entries()) {
+            m += `<span class="ptext badge ">${val}&nbsp;&nbsp; <span onclick="end('${index}')">&#10539;</span></span>`;
+            n += `<span class="ptext badge ">${val}&nbsp;&nbsp;</span>`;
+        }
+        $('.pills').html(m);
+        $('.showpill').html(n);
+    }
+
+    function renderNOTaddedskills(notaddedskills) {
+        var k = '<ul id="myUL">';
+        for (let [index, val] of notaddedskills.entries()) {
+            k += `  
+            
+            <li><a href="#">${val}<span class="btn btn-primary float-right" onclick="getfn('${val}')">Add</span></a></li>`;
+        }
+        k+= '</ul>'
+        $('.opts').html(k);
+    }
+
+    function end(skillindex) {
+        userskills.splice(skillindex, 1)
+        $('input[name="skills"]').val(userskills.toString());
+        skills(userskills)
+    }
+
+    function getfn(j) {
+        userskills.push(j)
+        $('input[name="skills"]').val(userskills.toString());
+        skills(userskills)
+    }
+
+
+    function myFunction() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById('myInput');
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("myUL");
+        li = ul.getElementsByTagName('li');
+        // Loop through all list items, and hide those who don't match the search query
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("a")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+
+
+    function toggleLoc() {
+        $('#locinp').slideToggle();
+    }
+    var placesAutocomplete = places({
+        appId: 'plL8DK6W7UMI',
+        apiKey: '40cb59d9a2c2db8575007be72b8bb2bd',
+        container: document.querySelector('#locateplaces')
+    });
+
+    placesAutocomplete.on('change', e => {
+        document.getElementById("loclatlng").value = `${e.suggestion.latlng.lat},${e.suggestion.latlng.lng}`;
+        console.log(e.suggestion.latlng);
+    });
+
+    var rad = function (x) {
+        return x * Math.PI / 180;
+    };
+    var p1 = {
+        lat: 19.2396,
+        lng: 73.1366
+    }
+    var p2 = {
+        lat: 18.7884,
+        lng: 73.346
+    }
+    var getDistance = function (p1, p2) {
+        var R = 6378137;
+        var dLat = rad(p2.lat - p1.lat);
+        var dLong = rad(p2.lng - p1.lng);
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) *
+            Math.sin(dLong / 2) * Math.sin(dLong / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
+        return d; // returns the distance in meter
+    };
+</script>
+{% endblock content %}
