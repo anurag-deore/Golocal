@@ -104,7 +104,7 @@
   function sendajax() {
     if ('{% if current_user.location == None %}1{% else %}0{% endif %}' == 1) {
       $('.sea').html(`
-      <div class="alert alert-receiver">Please Update your location First</div>
+      <div class="alert alert-receiver">Please Update your location First <a href="{{url_for('account')}}">Here</a></div>
       `);
     } else {
       var sendskills = $('input[name="filterof"]').val();

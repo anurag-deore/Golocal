@@ -74,14 +74,14 @@ def newchat():
         sender = request.form.get('sender'),
         receiver = request.form.get('receiver')
         chat = Chats(
-            message = message, 
-            sender = sender ,
-            receiver = receiver)
+            message = message[0], 
+            sender = sender[0],
+            receiver = receiver[0])
         db.session.add(chat)
         db.session.commit()
         # chats = Chats.query.filter(Chats.sender == sender,Chats.receiver == receiver).all()
-        chats = Chats.query.filter(or_(and_(Chats.sender==sender,Chats.receiver==receiver), \
-                                    and_(Chats.sender==receiver,Chats.receiver==sender)))
+        chats = Chats.query.filter(or_(and_(Chats.sender==sender[0],Chats.receiver==receiver), \
+                                    and_(Chats.sender==receiver,Chats.receiver==sender[0])))
         for chat in chats:
             chatarray.append(chat.serialize())
         return jsonify(chatarray)
@@ -91,12 +91,12 @@ def newchat():
 def getchat():
     chatarray =[]
     if request.method == 'POST':
+        print(request.form.get('sender'))
         chatarray.clear()
         sender = request.form.get('sender'),
         receiver = request.form.get('receiver')
-        # chats = Chats.query.filter(Chats.sender == sender,Chats.receiver == receiver).all()
-        chats = Chats.query.filter(or_(and_(Chats.sender==sender,Chats.receiver==receiver), \
-                                    and_(Chats.sender==receiver,Chats.receiver==sender)))
+        chats = Chats.query.filter(or_(and_(Chats.sender==sender[0],Chats.receiver==receiver), \
+                                    and_(Chats.sender==receiver,Chats.receiver==sender[0])))
         for chat in chats:
             chatarray.append(chat.serialize())
         return jsonify(chatarray)
@@ -247,8 +247,5 @@ def Search():
 @app.route("/user/<string:username>")
 @login_required
 def user_posts(username):
-    # page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
-    # posts = Post.query.filter_by(author=user)\
-    #     .order_by(Post.date_posted.desc())
     return render_template('user_posts.html',post=user)
