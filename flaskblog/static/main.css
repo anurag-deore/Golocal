@@ -12,14 +12,31 @@ body {
   color: purple !important;
   background-color: rgb(235, 191, 235);
 }
+
 .pskilltext {
   font-size: 12px;
   font-weight: lighter;
   cursor: pointer;
   width: max-content;
   margin: 2px;
-  color: rgb(133, 39, 136) !important;
-  background-color: rgb(241, 213, 241);
+  padding: 2px 8px;
+  color: rgb(154, 8, 235) !important;
+  background-color: rgb(244, 227, 252);
+}
+.psuertext strong {
+  padding: 0;
+  margin: 0;
+  font-size: 20px;
+}
+.psuertext {
+  font-size: 14px;
+  font-weight: lighter;
+  border-radius: 30px;
+  width: max-content;
+  margin: 5px;
+  padding: 5px 15px;
+  color: rgb(154, 8, 235) !important;
+  background-color: rgb(244, 227, 252);
 }
 .dropdown-menu {
   margin-top: 42px !important;
@@ -32,8 +49,31 @@ body {
   height: 100px;
   width: 100px;
 }
-.text-theme a ,.text-theme{
-  color: rgb(154, 8, 235);
+
+.alert-sender {
+  border-radius: 150px;
+  border-bottom-right-radius: 0px;
+  font-size: 14px;
+
+  color: #000000;
+  background-color: #e4e6e7;
+  border: none;
+}
+.alert-receiver {
+  border-radius: 150px;
+  border-bottom-left-radius: 0px;
+  font-size: 14px;
+
+  color: #000;
+  background-color: rgb(244, 227, 252);
+  border: none;
+}
+
+.text-theme a,
+.text-theme {
+  /* color: rgb(154, 8, 235); */
+  color: black;
+  font-size: 14px;
   text-decoration: none;
 }
 .text-theme a:hover {
@@ -48,8 +88,8 @@ body {
   background-color: rgb(154, 8, 235);
   color: floralwhite;
 }
-.btn-outline-theme:focus{
-  box-shadow: 0 0 0 0.2rem rgba(154, 8, 235,.5);
+.btn-outline-theme:focus {
+  box-shadow: 0 0 0 0.2rem rgba(154, 8, 235, 0.5);
 }
 
 .btn-outline-theme {
@@ -139,10 +179,31 @@ body {
 .sidebar-btn {
   display: none;
 }
-
+.filter_sm{
+  display: block;
+}
+#mapid{
+  height: 600px
+}
 @media screen and (max-width: 767px) {
+  #mapid{
+    height: 200px
+  }
+  .filter_sm {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    z-index: 1021;
+    width: 100vw;
+    height: 100vh;
+  }
   .nav-pills .nav-item {
     width: 50%;
+  }
+  .navbar{
+    margin-bottom: 10px;
   }
   .navbar-brand {
     font-size: 20px;
@@ -206,5 +267,23 @@ body {
   }
   .overlay.open {
     display: block;
+  }
+  .alert-sender {
+    border-radius: 150px;
+    border-bottom-right-radius: 0px;
+    font-size: 12px;
+    padding: 3px 8px;
+    color: #000000;
+    background-color: #e4e6e7;
+    border: none;
+  }
+  .alert-receiver {
+    border-radius: 150px;
+    border-bottom-left-radius: 0px;
+    font-size: 12px;
+    padding: 3px 8px;
+    color: #000;
+    background-color: rgb(244, 227, 252);
+    border: none;
   }
 }

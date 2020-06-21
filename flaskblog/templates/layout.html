@@ -1,8 +1,9 @@
+<!-- { {  JSGlue.include() }} -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <title>Hack Jaipur !</title>
+  <title>GoLocal</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -13,6 +14,12 @@
   <link rel="shortcut icon" href="https://www.favicon.cc/logo3d/525630.png" type="image/x-icon">
   <script src="{{url_for('static',filename='dist/jquery.js')}}">
   </script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+  crossorigin=""></script>
 </head>
 
 <body>
@@ -20,13 +27,12 @@
     {% if current_user.is_authenticated %}
     <i class="material-icons material-icons-outlined pr-3 pl-1 px-sm-3 d-md-none d-block text-light sidebar-btn"
       style="font-size: 40px; margin: 0;cursor: pointer;">menu</i>
-    {% endif %}
-    <a class="navbar-brand active" href="{{ url_for('home') }}">GoLocal</a>
+      <a class="navbar-brand active" href="{{ url_for('home') }}">GoLocal</a>
+      {% else %}
+      <a class="navbar-brand active" href="{{ url_for('index') }}">GoLocal</a>
+      {% endif %}
     <div class="ml-auto d-flex flex-row ">
       {% if current_user.is_authenticated %}
-      <a href="{{url_for('new_post')}}" class="nav-item nav-link d-md-block d-none">New Post</a>
-      <a href="{{ url_for('user_posts', username=current_user.username) }}"
-        class="nav-item nav-link d-md-block d-none">My Posts</a>
       <a href="{{url_for('home')}}" class="mr-3 nav-item nav-link d-md-block d-none">Home</a>
       <div class="dropdown dropleft d-md-block d-none">
         <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
@@ -73,14 +79,14 @@
     <hr>
     <br>
     <a href="{{url_for('home')}}" class="mr-3 nav-item nav-link">Home</a>
-    <a href="{{url_for('new_post')}}" class="nav-item nav-link">New Post</a>
-    <a href="{{ url_for('user_posts', username=current_user.username) }}" class="nav-item nav-link ">My Posts</a>
+    <!-- <a href="{ {url_for('new_post')}}" class="nav-item nav-link">New Post</a>
+    <a href="{ { url_for('user_posts', username=current_user.username) }}" class="nav-item nav-link ">My Posts</a> -->
     <a class="nav-item nav-link" href="{{ url_for('account') }}">Profile</a>
     <a class="nav-item nav-link " href="{{ url_for('logout') }}">Logout</a>
     {% endif %}
   </div>
   <div class="container-sm container-fluid">
-
+    
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
@@ -121,9 +127,6 @@
         $(".mobileMenu, .overlay").toggleClass("open");
       });
     });
-
-    
-   
 
   </script>
 </body>

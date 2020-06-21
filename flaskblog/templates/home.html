@@ -29,59 +29,62 @@
     background-color: #eee;
     /* Add a hover effect to all links, except for headers */
   }
+
 </style>
+<div class="d-flex justify-content-center align-items-center mt-0 mt-md-4 d-block d-md-none mb-2">
+  <button class="btn btn-sm border d-flex justify-content-center align-items-center" id="openfilter"><i class="material-icons material-icons-outlined">filter_list</i>Filters</button>
+</div>
+{% if current_user.location_latlng == None%}
+  {% set list1 = [22.923,73.9238] %}
+
+{% else %}
+{% set list1 =current_user.location_latlng.split(',') %}
+{% endif %}
 <div class="row ">
-  <div class="col-md-8 col-12 mt-0 mt-md-4">
-    <div class="sea">
-      {% for post in posts %}
-      {% set list1 = post.skills.split(',') %}
-      <div class="p-3 mb-3 border rounded shadow-sm">
-        <div class="row pl-md-2">
-          <div class="col-9 col-sm-9 col-md-10">
-            <h5>{{post.username}} <small class="badge  badge-primary font-weight-light ">{{post.category}}</small> </h5>
-            <article class="text-theme"><a href="{{ url_for('user_posts', username=post.username) }}">{{post.email}}</a>
-            </article>
-          </div>
-          <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
-            <img src="{{ url_for('static', filename='profile_pics/' + post.image_file) }}" class=" card-img"
-              alt="user pic">
-          </div>
-        </div>
-
-        <div class="pt-md-0 pt-2 card-text  d-flex align-items-center">
-          <span
-            class="material-icons material-icons-outlined card-icon pr-2 text-muted">location_on</span>{{post.location}}
-        </div>
-
-        <div class="row mt-3 ">
-          <p class="m-0 col-3 col-sm-3 col-md-2 ">Skills</p>
-          <div class="col-8">
-            <div class="row">
-              {% for i in list1 %}
-              <span class="pskilltext badge col-auto">{{i}}</span>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-
-
-        <p class="py-2 pr-0">
-          <button href="" class="contactnow btn float-right">Contact Now</button>
-        </p>
-
+  <div class="col-md-8 col-12 ">
+    <div class="d-block d-md-none ">
+      <form  method="POST" action="{{url_for('plotmap')}}">
+        <input class="d-none" type="text" name="filter" class="oohe">
+        <input class="d-none" type="text" name="x" value="{{list1[0] }}">
+        <input class="d-none" type="text" name="y" value="{{list1[1] }}">
+        <button {{ 'disabled' if current_user.location_latlng == None else '' }} type="submit" class="btn btn-block alert alert-warning">View On map ! </button>
+      </form>
+    </div>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div class="w-100 d-flex mr-2">
+        <input type="text" class="form-control" id="searchbar" placeholder="Search">
+        <span id="clearsearch"
+          style="margin-left:-30px;margin-top: 5px; color: black; cursor: pointer; background-color: transparent;border: none;">
+          <i class="material-icons material-icons-outlined">clear</i>
+        </span>
       </div>
-
-      {% endfor %}
+      <div>
+        <button id="searchbarbtn" class="btn-outline-secondary btn btn- small sm ">Search</button>
+      </div>
+    </div>
+    
+    <div class="sea">
     </div>
   </div>
+
   <div class="col-md-4 ">
-    <div class="pt-4 sticky-top ">
-      <div class="border p-3 rounded shadow-sm">
+    <div class="pt-4 sticky-top filter_sm">
+      <div class="border-0 border-md-1 p-3 rounded shadow-sm">
+        <span  class="d-block d-md-none float-right">
+          <i id="closefilter" style="font-size:35px;" class="material-icons material-icons-outlined">clear</i>
+        </span>
         <h4>Filters</h4>
         <hr>
-        <p>Location : Kalyan <a href="">change</a> </p>
-        <input name="location" type="text" class="form-control form-control-sm" placeholder="e.g. Delhi, Mumbai">
-        <br>
+        <p><a class="float-right" href="/account">change</a></p>
+        <p>Your Location </p>
+        <div class="d-none d-md-block ">
+          <form  method="POST" action="{{url_for('plotmap')}}">
+            <input class="d-none" type="text" name="filter" class="oohe">
+            <input class="d-none" type="text" name="x" value="{{list1[0] }}">
+            <input class="d-none" type="text" name="y" value="{{list1[1] }}">
+            <button {{ 'disabled' if current_user.location_latlng == None else '' }} type="submit" class="btn btn-block alert alert-warning">View On map ! </button>
+          </form>
+        </div>
         <p>Filter Skills</p>
         <div class="showpill"></div>
         <form action="" method="POST" id="skillform">
@@ -89,104 +92,78 @@
         </form>
         <input type="text" name="filterkskill" id="myInput" class="form-control" onkeyup="myFunction()"
           placeholder="Select skills. Eg: Mechanic, Electrician">
-        <div class="opts" style="height: auto;max-height: 250px; overflow-y: scroll;">
+        <div class="opts" style="height: auto;max-height: 250px;box-shadow:inset 0 0 10px lightgray; overflow-y: scroll;">
         </div>
       </div>
       <br>
-      <!-- <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" id="customSwitch1">
-        <label class="custom-control-label" for="customSwitch1"> <span class="float-right">For Women </span></label>
-      </div> -->
     </div>
   </div>
 </div>
 </div>
-<!-- <div class="row">
-  <div class="col-lg-3 ">
-    <div class="pt-4 sticky-top">
-      <div class="border p-3 rounded ">
-        <h4>Filters</h4>
-        <hr>
-        <p>Location</p>
-        <input name="location" type="text" class="form-control form-control-sm" placeholder="e.g. Delhi, Mumbai">
-        <br>
-        <p>Skills</p>
-        <input type="text" name="skillsearch" class="form-control form-control-sm" placeholder="Mechanic, Electrician">
-        <br>
-        <div class="custom-control custom-switch">
-          <input type="checkbox" class="custom-control-input" id="customSwitch1">
-          <label class="custom-control-label" for="customSwitch1"> <span class="float-right">For Women </span></label>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-9 mt-4" >
-    <div class="pt- bg-info" style="height: 2500px;">
-      <div class="p-3">
-        Normal data enter code here
-      </div>
-    </div>
-  </div>
-</div> -->
-<!-- <a href="{{url_for('new_post')}}"
-  style="position: fixed; bottom: 70px;right: 70px;border-radius: 200px;padding: 5px 10px;"
-  class=" shadow-lg btn btn-primary">
-  + New Job
-</a> -->
 <script>
   function sendajax() {
-    var sendskills = $('input[name="filterof"]').val();
-    $.ajax({
-      type: "POST",
-      url: "{{ url_for('home')}}",
-      dataType: "json",
-      data: {
-        sendskills: sendskills
-      },
-      success: function (response) {
-        response.sort(dynamicsort("distance", "asc"))
-        console.log(response)
-        var g = ''
-        response.forEach(element => {
-          g += `   <div class="p-3 mb-3 border rounded shadow-sm">
-                    <div class="row pl-md-2">
-                      <div class="col-9 col-sm-9 col-md-10">
-                        <h5>${element.username} <small class="badge  badge-primary font-weight-light ">${element.category}</small> </h5>
-                        <article class="text-theme"><a
-                            href="${'{'+'{'} url_for('user_posts', username=${element.username}) }}">${element.email}}</a>
-                        </article>
-                      </div>
-                      <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
-                        <img src="../static/profile_pics/${element.image_file}" class=" card-img"
-                          alt="user pic">
-                      </div>
-                    </div>
-                    <div class="pt-md-0 pt-2 card-text  d-flex align-items-center">
-                      <span
-                        class="material-icons material-icons-outlined card-icon pr-2 text-muted">location_on</span>${element.location}}
-                    </div>
-                    <div class="row mt-3 ">
-                      <p class="m-0 col-3 col-sm-3 col-md-2 ">Skills</p>
-                      <div class="col-8">
-                        <div class="row"> `
-                        for (let i = 0; i < element.skills.length; i++) {
-                          g += `<span class="pskilltext badge col-auto">` + element.skills[i] + `</span>`;}
-
-                        g += `</div>
+    if ('{% if current_user.location == None %}1{% else %}0{% endif %}' == 1) {
+      $('.sea').html(`
+      <div class="alert alert-receiver">Please Update your location First</div>
+      `);
+    } else {
+      var sendskills = $('input[name="filterof"]').val();
+      $.ajax({
+        type: "POST",
+        url: "{{ url_for('home')}}",
+        dataType: "json",
+        data: {
+          sendskills: sendskills
+        },
+        success: function (response) {
+          response.sort(dynamicsort("distance", "asc"))
+          console.log(response)
+          var g = '';
+          response.forEach(element => {
+            if (element.id == '{{current_user.id}}' && response.length == 1) {
+              g += `<span class="text-center">No Users Found</span>`;
+            } else if (element.id == '{{current_user.id}}') {
+              null
+            } else {
+              g += `<div class="p-3 mb-3 border rounded shadow-sm">
+                <div class="row pl-md-2">
+                  <div class="col-9 col-sm-9 col-md-10">
+                    <h5>${element.username}</h5>
+                    <article class="text-theme"><a
+                        href="${element.url}">${element.email}</a>
+                    </article>
+                  </div>
+                  <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
+                    <img src="../static/profile_pics/${element.image_file}" class=" card-img"
+                      alt="user pic">
+                  </div>
+                </div>
+                
+                <div class="row pl-2 ">
+                  <p class="m-0 col-3 col-sm-3 col-md-2 ">Skills</p>
+                  <div class="col-8">
+                    <div class="row"> `
+              if (element.skills == '') {
+                g += `<small >No Skills Added</small>`;
+              } else {
+                for (let i = 0; i < element.skills.length; i++) {
+                  g += `<span class="pskilltext badge ">` + element.skills[i] + `</span>`;
+                }
+              }
+              g += `</div>
                     </div>
                     </div>
                     <p class="py-2 pr-0">
-                      <button href="" class="contactnow btn float-right">Contact Now</button>
+                      <a href="${element.url}" class="contactnow btn float-right" >Contact Now</a>
                     </p>
-
-                  </div>
-`
-        });
-        $('.sea').html(g);
-      }
-    });
+                  </div>`
+            }
+          });
+          $('.sea').html(g);
+        }
+      });
+    }
   }
-
 
   function dynamicsort(property, order) {
     var sort_order = 1;
@@ -194,39 +171,32 @@
       sort_order = -1;
     }
     return function (a, b) {
-      // a should come before b in the sorted order
       if (a[property] < b[property]) {
         return -1 * sort_order;
-        // a should come after b in the sorted order
       } else if (a[property] > b[property]) {
         return 1 * sort_order;
-        // a and b are the same
       } else {
         return 0 * sort_order;
       }
     }
   }
 
-
-
-
-
+  $('#closefilter').click(function (e) { 
+    e.preventDefault();
+    $('.filter_sm').fadeOut();
+  });
+  $('#openfilter').click(function (e) { 
+    e.preventDefault();
+    $('.filter_sm').fadeIn();
+  });
 
   var notaddedskills = [];
   var userskills = []
   var allskills = [
-    'ANDAMAN ', 'ANDHRA PRADESH', 'ARUNACHAL PRADESH', 'ASSAM', 'BIHAR', 'CHATTISGARH',
-    'CHANDIGARH', 'DAMAN AND DIU', 'DELHI',
-    'DADRA AND NAGAR HAVELI', 'GOA', 'GUJARAT', 'HIMACHAL PRADESH', 'HARYANA', 'JAMMU AND KASHMIR', 'JHARKHAND',
-    'KERALA', 'KARNATAKA', 'LAKSHADWEEP', 'MEGHALAYA', 'MAHARASHTRA', 'MANIPUR', 'MADHYA PRADESH', 'MIZORAM',
-    'NAGALAND', 'ORISSA', 'PUNJAB', 'PONDICHERRY', 'RAJASTHAN', 'SIKKIM', 'TAMIL NADU', 'TRIPURA',
-    'UTTARAKHAND',
-    'UTTAR PRADESH', 'WEST BENGAL', 'TELANGANA'
-  ]
-
+        'mechanic','carpenter','electrician','plumber','welder','cleaner'
+    ]
 
   function skills(userskills) {
-
     notaddedskills = allskills.filter(function (obj) {
       return userskills.indexOf(obj) == -1;
     });
@@ -240,7 +210,7 @@
     var m = '';
     var n = '';
     for (let [index, val] of userskills.entries()) {
-      m += `<span class="ptext badge ">${val}&nbsp;&nbsp; <span onclick="end('${index}')">&#10539;</span></span>`;
+      m += `<span class="ptext badge ">${val}&nbsp;&nbsp; <span onclick="end('${index}')">x</span></span>`;
       n += `<span class="ptext badge ">${val}&nbsp;&nbsp;</span>`;
     }
     $('.showpill').html(m);
@@ -265,11 +235,24 @@
   function getfn(j) {
     userskills.push(j)
     $('input[name="filterof"]').val(userskills.toString());
+    $('.oohe').val(userskills.toString());
     skills(userskills)
     $('#myInput').val('');
     sendajax();
   }
 
+  $('#clearsearch').click(function (e) {
+    e.preventDefault();
+   
+    if ('{% if current_user.location == None %}1{% else %}0{% endif %}' == 1) {
+      $('.sea').html(`
+      <div class="alert alert-receiver">Please Update your location First</div>
+      `);
+    } else if ($('#searchbar').val() == '') {} else {
+      sendajax();
+    }
+    $('#searchbar').val('');
+  });
 
   function myFunction() {
     var input, filter, ul, li, a, i, txtValue;
@@ -293,6 +276,96 @@
     var o = []
     o == '' ? userskills = [] : userskills = o.split(",")
     skills(userskills)
+    sendajax();
+  });
+
+
+
+  function loadCharacters(searchString) {
+
+    $.ajax({
+      type: "POST",
+      url: "{{ url_for('Search')}}",
+      dataType: "json",
+      data: {
+        searchString: searchString
+      },
+      success: function (response) {
+        response.sort(dynamicsort("distance", "asc"))
+        var g = '';
+        response.length <= 0 ?
+          (g += `
+        <div class="w-100 d-flex justify-content-center">
+        <div class="card d-flex bg-light flex-row align-items-center justify-content-around" style="height:100px;width:50%">
+          <i class="material-icons material-icons-outlined" style="font-size:40px;color: rgb(153,4,255);">error_outline</i>
+          <div class="text-center">No Users Found</div>
+        </div>
+        </div>`) :
+          response.forEach(element => {
+            if (element.id == '{{current_user.id}}' && response.length == 1) {
+              g += `
+        <div class="w-100 d-flex justify-content-center">
+        <div class="card d-flex bg-light flex-row align-items-center justify-content-around" style="height:100px;width:50%">
+          <i class="material-icons material-icons-outlined" style="font-size:40px;color: rgb(153,4,255);">error_outline</i>
+          <div class="text-center">No Users Found</div>
+        </div>
+        </div>`;
+
+            } else if (element.id == '{{current_user.id}}') {
+              null
+            } else {
+              g += `<div class="p-3 mb-3 border rounded shadow-sm">
+                <div class="row pl-md-2">
+                  <div class="col-9 col-sm-9 col-md-10">
+                    <h5>${element.username}</h5>
+                    <article class="text-theme"><a
+                        href="${element.url}">${element.email}</a>
+                    </article>
+                  </div>
+                  <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
+                    <img src="../static/profile_pics/${element.image_file}" class=" card-img"
+                      alt="user pic">
+                  </div>
+                </div>
+                <div class="pt-md-0 pt-2 card-text  d-flex align-items-center">
+                  <span
+                    class="material-icons material-icons-outlined card-icon pr-2 text-muted">location_on</span>${element.location}
+                </div>
+                <div class="row mt-3 ">
+                  <p class="m-0 col-3 col-sm-3 col-md-2 ">Skills</p>
+                  <div class="col-8">
+                    <div class="row"> `
+              if (element.skills == '') {
+                g += `<small >No Skills Added</small>`;
+              } else {
+                for (let i = 0; i < element.skills.length; i++) {
+                  g += `<span class="pskilltext badge ">` + element.skills[i] + `</span>`;
+                }
+              }
+              g += `</div>
+                    </div>
+                    </div>
+                    <p class="py-2 pr-0">
+                      <a href="${element.url}" class="contactnow btn float-right" >Contact Now</a>
+                    </p>
+                  </div>`
+            }
+          });
+        $('.sea').html(g);
+      }
+    });
+  }
+
+  $('#searchbarbtn').click(function (e) {
+    e.preventDefault();
+    if ('{% if current_user.location == None %}1{% else %}0{% endif %}' == 1) {
+      $('.sea').html(`
+      <div class="alert alert-receiver">Please Update your location First</div>
+      `);
+    } else if ($('#searchbar').val() == '') {} else {
+      const searchString = $('#searchbar').val();
+      loadCharacters(searchString.toLowerCase());
+    }
   });
 </script>
 {% endblock content %}

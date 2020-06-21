@@ -1,4 +1,137 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>About Page</h1>
+<script>
+    var plane = [];
+    var ids = [];
+</script>
+<div class="row">
+    <div class="col-md-6 col-12">
+        <a href="{{url_for('home')}}" class=" mb-3 btn  contactnow" style="background-color: transparent;">
+            <i class="material-icons material-icons-outlined" style="font-size: 12px;">arrow_back_ios</i>
+            Home</a>
+        <div id="mapid" class="mb-3" style="width: 100%; "></div>
+    </div>
+    <div class="col-md-6 col-12">
+        <div id="showbtn" class="d-none p-3">
+            <center>
+                <button class="btn btn-info btn-block" onclick="showall()">Showall</button>
+            </center>
+        </div>
+        {% for user in a %}
+        <div id="selfbox" class="d-none">
+            This is You {{user.username}}
+        </div>
+
+        <script>
+            plane.push("{{user.location_latlng}}")
+            ids.push("{{ 'no' if user.id == current_user.id else user.id }}")
+            console.log(ids)
+        </script>
+        {% if current_user.id == user.id %}
+
+        {% else %}
+
+        <div class="p-3 mb-3 border rounded " id="{{user.id}}">
+            <div class="row pl-md-2">
+                <div class="col-9 col-sm-9 col-md-10">
+                    <h5>{{user.username}}</h5>
+                    <article class="text-theme">{{user.email}}
+                    </article>
+                    <div class="mt-2 card-text d-flex align-items-center">
+                        <span
+                            class="material-icons material-icons-outlined card-icon pr-2 text-muted">location_on</span>{{user.location}}
+                    </div>
+                    <h4 class="mt-3 ml-0  pl-1 col-3 col-sm-3 col-md-2 ">Skills</h4>
+                    <div class="row pl-2">
+                        {% if user.skills == None or user.skills == [] %}
+                        <span class="pl-2">No skills Added</span>
+                        {% else %}
+                        {% for i in user.skills %}
+                        <span class="psuertext col-12 col-md-auto d-flex align-items-center"> {{i}}</span>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
+                    <img src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}" class="img-fluid"
+                        alt="user pic">
+                </div>                
+            </div>
+            <p class="py-2 pr-0">
+                <a href="/user/{{user.username}}" class="contactnow btn float-right" >Contact Now</a>
+              </p>
+        </div>
+
+        {% endif %}
+        {%endfor%}
+    </div>
+</div>
+
+</body>
+<script id="script1">
+    var planes = []
+    plane.forEach(element => {
+        a = element.split(",")
+        planes.push(a)
+    });
+    ' {% set list1 =current_user.location_latlng.split(',') %}'
+   var x = '{{list1[0]}}';
+   var y = '{{list1[1]}}';
+    var mymap = L.map('mapid').setView([x,y], 10);
+
+    var onMarkerClick = function (e) {
+        for (let i = 0; i < ids.length; i++) {
+
+            if (this.options.myCustomId == "no") {
+                for (let i = 0; i < ids.length; i++) {
+                    $(`#${ids[i]}`).addClass('d-none');
+                }
+                $('#selfbox').removeClass('d-none');
+                $('#showbtn').removeClass('d-none');
+            } else {
+                ids[i] == this.options.myCustomId ?
+                    ($(`#${ids[i]}`).removeClass('d-none'),
+                        $('#selfbox').addClass('d-none')) :
+                    ($(`#${ids[i]}`).addClass('d-none'),
+                        $('#selfbox').addClass('d-none'));
+                $('#showbtn').removeClass('d-none');
+            }
+        }
+    }
+
+    function showall(params) {
+        for (let i = 0; i < ids.length; i++) {
+            $(`#${ids[i]}`).removeClass('d-none');
+        }
+        $('#selfbox').addClass('d-none');
+        $('#showbtn').addClass('d-none');
+    }
+    var greenIcon = L.icon({
+            iconUrl: '../static/mark.png',
+            iconSize: [40,40], // size of the icon
+            iconAnchor: [20,40], // point of the icon which will correspond to marker's location
+        });
+    for (var i = 0; i < planes.length; i++) {
+        var marker;
+        if (ids[i]=="no"){
+            marker = new L.marker([planes[i][0], planes[i][1]], {
+                myCustomId: `${ids[i]}`,icon: greenIcon
+            }).addTo(mymap).on('click', onMarkerClick);
+        }else{
+                marker = new L.marker([planes[i][0], planes[i][1]], {
+                    myCustomId: `${ids[i]}`
+                }).addTo(mymap).on('click', onMarkerClick);
+        }
+    }
+
+
+    L.tileLayer(
+        'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic29vbWVlIiwiYSI6ImNrYmtsNWtnbTEwNHUyeGw5YzRyZjE1bGEifQ.CCl1JLQFM26ry6zQ5E7pJw', {
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1Ijoic29vbWVlIiwiYSI6ImNrYmtsNWtnbTEwNHUyeGw5YzRyZjE1bGEifQ.CCl1JLQFM26ry6zQ5E7pJw'
+        }).addTo(mymap);
+</script>
 {% endblock content %}

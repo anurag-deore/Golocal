@@ -38,19 +38,23 @@
         /* Add a hover effect to all links, except for headers */
     }
 </style>
+
 <div class="alert alert-success d-none" id="myalert">
     {{ message }}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
+
+
+
 <div class="d-flex row align-items-center">
     <div class="col-md-2 col-sm-3 col-5 col-lg-2 offset-lg-1">
         <img class=" account-img shadow-sm img-thumbnail" src="{{image_file}}">
     </div>
     <div class="col-md-10 col-sm-9 col-7 col-lg-9 pl-2">
         <h4>{{current_user.username}}</h4>
-        <p>{{ current_user.email }} <span class="badge badge-pill badge-primary">{{ current_user.category }}</span></p>
+        <p>{{ current_user.email }} </p>
     </div>
 </div>
 <hr>
@@ -104,36 +108,9 @@
                 {% endif %}
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-2">
-                Location
-            </div>
-            <div class="col-sm-10">
-                <div class="float-right">
-                    <p style="cursor: pointer;color: rgb(154,4,255);" onclick="toggleLoc()">Change</p>
-                </div>
-                <span class="text-muted">{{ current_user.location }}</span>
-            </div>
-        </div>
-        <div class="form-group row pt-3 bg-light " style="display: none;" id="locinp">
-
-            {{ form.location.label(class="col-form-label col-sm-2 ") }}
-            <div class="col-sm-10">
-                {% if form.location.errors %}
-                {{ form.location(class="form-control  is-invalid",placeholder="Select City Eg: Kalyan" ,id="locateplaces" ) }}
-                <div class="invalid-feedback">
-                    {% for error in form.location.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.location(id="locateplaces" ,placeholder="Select City Eg: Kalyan" , class=" form-control ") }}
-                {% endif %}
-                {{ form.location_latlng(id="loclatlng" ,class="form-control invisible",style="margin-top:-20px") }}
-            </div>
-        </div>
+        
         <hr>
-        <p class="text-muted font-weight-bold">Skills</p>
+        <p class="text-muted font-weight-bo ld">Skills</p>
         <div class="form-group row">
             <div class="col-sm-2">Current Skills</div>
             <div class="col-sm-8 showpill">
@@ -144,11 +121,37 @@
                     {{ 'Add' if current_user.skills == '' else 'Modify' }} skills</button>
             </div>
         </div>
-        {{ form.skills(class="d-none") }}
-        <div class="form-group text-left">
-            {{ form.submit(class="btn btn-dark") }}
+        <hr>
+        <div id="locationcome">
+            <div class="row">
+                <div class="col-sm-2">
+                    Location
+                </div>
+                <div class="col-sm-10">
+                    <div class="float-right">
+                        <!-- <p style="cursor: pointer;color: rgb(154,4,255);" onclick="toggleLoc()">Change</p> -->
+                    </div>
+                </div>
+            </div>
         </div>
-    </form>
+        <div class="form-group pt-3 bg-light " style="display: non e ;" id="locinp">
+            <div class="px-3">
+                {{ form.location.label(class="col-form-label col-sm-5 ") }}
+                <p for="" class="text-danger">*Add anchor to the map and click on update</p>
+            </div>
+            <div id="mapid" style="width: 100%; height: 400px"></div>
+            <br>
+            {{ form.location_latlng(id="loclatlng" ,class="form-control invisible",style="margin-top:-20px") }}
+                <!-- <div class="col-md-12 p-3">
+            </div> -->
+        </div>
+        
+        {{ form.skills(class="d-none") }}
+        
+            <div class="form-group text-left mt3">
+                {{ form.submit(class="btn btn-dark") }}
+            </div>
+        </form>
 </div>
 <div class="modal fade " id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
     aria-hidden="true">
@@ -169,10 +172,11 @@
                 <hr>
                 <div class="row">
                     <div class="col-8 col-sm-10 pr-0">
-                        <input type="text" id="myInput" class="form-control" onkeyup="myFunction()" placeholder="Search for names..">
+                        <input type="text" id="myInput" class="form-control" onkeyup="myFunction()"
+                            placeholder="Search for names..">
                     </div>
                     <div class="col-4 col-sm-2">
-                        <button  class="btn btn-secondary btn-block" data-dismiss="modal"> Done </button>
+                        <button class="btn btn-secondary btn-block" data-dismiss="modal"> Done </button>
                     </div>
                 </div>
                 <div class="opts">
@@ -188,21 +192,14 @@
 <script src="https://cdn.jsdelivr.net/npm/places.js@1.19.0"></script>
 <script>
     var allskills = [
-        'ANDAMAN ', 'ANDHRA PRADESH', 'ARUNACHAL PRADESH', 'ASSAM', 'BIHAR', 'CHATTISGARH',
-        'CHANDIGARH', 'DAMAN AND DIU', 'DELHI',
-        'DADRA AND NAGAR HAVELI', 'GOA', 'GUJARAT', 'HIMACHAL PRADESH', 'HARYANA', 'JAMMU AND KASHMIR', 'JHARKHAND',
-        'KERALA', 'KARNATAKA', 'LAKSHADWEEP', 'MEGHALAYA', 'MAHARASHTRA', 'MANIPUR', 'MADHYA PRADESH', 'MIZORAM',
-        'NAGALAND', 'ORISSA', 'PUNJAB', 'PONDICHERRY', 'RAJASTHAN', 'SIKKIM', 'TAMIL NADU', 'TRIPURA',
-        'UTTARAKHAND',
-        'UTTAR PRADESH', 'WEST BENGAL', 'TELANGANA'
+        'mechanic', 'carpenter', 'electrician', 'plumber', 'welder', 'cleaner'
     ]
     var notaddedskills = [];
     var userskills = []
 
     $(document).ready(function () {
         var o = '{{ form.skills.data }}';
-        o == '' ? userskills = [] : userskills = o.split(",")
-
+        o == '' || o == 'None' ? userskills = [] : userskills = o.split(",")
         skills(userskills)
     });
 
@@ -212,7 +209,7 @@
             return userskills.indexOf(obj) == -1;
         });
         console.log(userskills);
-        userskills.length <= 0 ? $('.pills').html('No Skills added yet') :
+        userskills.length == 0 ? $('.pills,.showpill').html('No Skills added yet') :
             renderaddedskills(userskills)
         notaddedskills.length <= 0 ? $('.opts').html('All skills already added !') :
             renderNOTaddedskills(notaddedskills)
@@ -232,11 +229,11 @@
     function renderNOTaddedskills(notaddedskills) {
         var k = '<ul id="myUL">';
         for (let [index, val] of notaddedskills.entries()) {
-            k += `  
-            
+            k +=
+                `  
             <li><a href="#">${val}<span class="btn btn-primary float-right" onclick="getfn('${val}')">Add</span></a></li>`;
         }
-        k+= '</ul>'
+        k += '</ul>'
         $('.opts').html(k);
     }
 
@@ -276,38 +273,49 @@
     function toggleLoc() {
         $('#locinp').slideToggle();
     }
-    var placesAutocomplete = places({
-        appId: 'plL8DK6W7UMI',
-        apiKey: '40cb59d9a2c2db8575007be72b8bb2bd',
-        container: document.querySelector('#locateplaces')
-    });
+    // var placesAutocomplete = places({
+    //     appId: 'plL8DK6W7UMI',
+    //     apiKey: '40cb59d9a2c2db8575007be72b8bb2bd',
+    //     language: 'en-us',
+    //     container: document.querySelector('#locateplaces')
+    // });
 
-    placesAutocomplete.on('change', e => {
-        document.getElementById("loclatlng").value = `${e.suggestion.latlng.lat},${e.suggestion.latlng.lng}`;
-        console.log(e.suggestion.latlng);
-    });
+    // placesAutocomplete.on('change', e => {
+    //     document.getElementById("loclatlng").value = `${e.suggestion.latlng.lat},${e.suggestion.latlng.lng}`;
+    //     console.log(e.suggestion.latlng);
+    // });
 
-    var rad = function (x) {
-        return x * Math.PI / 180;
-    };
-    var p1 = {
-        lat: 19.2396,
-        lng: 73.1366
-    }
-    var p2 = {
-        lat: 18.7884,
-        lng: 73.346
-    }
-    var getDistance = function (p1, p2) {
-        var R = 6378137;
-        var dLat = rad(p2.lat - p1.lat);
-        var dLong = rad(p2.lng - p1.lng);
-        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) *
-            Math.sin(dLong / 2) * Math.sin(dLong / 2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        var d = R * c;
-        return d; // returns the distance in meter
-    };
+    "{% if current_user.location_latlng == None %}"
+        var x = 23.473324;
+        var y = 77.947998;
+    "{% else %} {% set list1 =current_user.location_latlng.split(',') %}"
+        var x = '{{list1[0]}}';
+        var y = '{{list1[1]}}';
+    "{% endif %}"
+
+    var mymap = L.map('mapid').setView([x, y], 8);
+    // var new_popup = L.popup({"autoClose": false, "closeOnClick": null}).setContent('you are here!').openOn(mymap);
+    markerold = new L.marker([x, y]).bindPopup('you are here!').addTo(mymap);
+
+    L.tileLayer(
+        'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic29vbWVlIiwiYSI6ImNrYmtsNWtnbTEwNHUyeGw5YzRyZjE1bGEifQ.CCl1JLQFM26ry6zQ5E7pJw', {
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1Ijoic29vbWVlIiwiYSI6ImNrYmtsNWtnbTEwNHUyeGw5YzRyZjE1bGEifQ.CCl1JLQFM26ry6zQ5E7pJw'
+        }).addTo(mymap);
+    mymap.on('click', function (e) {
+        mymap.removeLayer(markerold);
+        // e.lngLat is the longitude, latitude geographical position of the event
+        var x = JSON.stringify(e.latlng);
+        var xx = JSON.parse(x);
+        markerold = new L.marker([xx.lat, xx.lng]).bindPopup('you are here :   '+[xx.lat.toFixed(4), xx.lng.toFixed(4)]).addTo(mymap);
+        document.getElementById("loclatlng").value = `${xx.lat.toFixed(4)},${xx.lng.toFixed(4)}`
+        // markerold.on('click', function (e) {
+        //     mymap.removeLayer(markerold);
+        //     document.getElementById("loclatlng").value = "";
+        // });
+    });
 </script>
 {% endblock content %}

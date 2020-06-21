@@ -1,7 +1,17 @@
 {% extends "layout.html" %}
 {% block content %}
+<style>
+    .card{
+        width: 60vw;
+    }
+    @media screen and (max-width: 767px) {
+        .card{
+            width: 90vw;
+        }
+    }
+</style>
 <div class=" d-flex justify-content-center align-items-center">
-    <div class="card shadow-lg mb-5" style="width: 70vw;">
+    <div class="card shadow-lg mb-5" >
         <div class="card-body ">
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
@@ -64,19 +74,6 @@
                                 {% endif %}
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        {{ form.category.label(class="form-control-label") }}
-                        {% if form.category.errors %}
-                        {{ form.category(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.category.errors %}
-                            <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        {{ form.category(class="radio-button") }}
-                        {% endif %}
                     </div>
                     <div class="form-group">
                         {{ form.submit(class="btn btn-outline-info") }}

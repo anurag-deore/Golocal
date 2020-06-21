@@ -2,7 +2,6 @@ from datetime import datetime
 from flaskblog import db, login_manager
 from flask_login import UserMixin
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -15,10 +14,10 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     category = db.Column(db.String(10),nullable=False)
-    skills = db.Column(db.Text,nullable=True)
+    skills = db.Column(db.Text,nullable=True,default='')
     location = db.Column(db.String(120),nullable=True)
     location_latlng = db.Column(db.String(120),nullable=True)
-    posts = db.relationship('Post', backref='author', lazy=True)
+    # posts = db.relationship('Post', backref='author', lazy=True)
     def serialize(self):
         return {
             "id":self.id,
@@ -26,26 +25,42 @@ class User(db.Model, UserMixin):
             "email":self.email,
             "image_file":self.image_file,
             "category":self.category,
-            "skills":self.skills.split(","),
+            "skills": [] if self.skills == None or self.skills=='' else self.skills.split(","),
             "location":self.location,
             "location_latlng":self.location_latlng,
-            "posts":self.posts,
         }
-
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    location = db.Column(db.String(100), nullable=False)
-    minsal = db.Column(db.Integer, nullable=False,default=0)
-    maxsal = db.Column(db.Integer, nullable=False,default=0)
-    applications = db.Column(db.Integer, nullable=False,default=0)
-    description = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+class Chats(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    sender = db.Column(db.Integer, nullable=False)
+    receiver = db.Column(db.Integer, nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    def serialize(self):
+        return {
+            "id":self.id,
+            "message":self.message ,
+            "time":self.date_posted.strftime("%b %d,%Y %H:%M"),
+            "sender":self.sender,
+            "receiver":self.receiver,
+        }
     def __repr__(self):
-        return f"Post('{self.title}', '{self.date_posted}')"
+        return f"Chat('{self.message}', '{self.sender}', '{self.receiver}')"
+
+# class Post(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String(100), nullable=False)
+#     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     location = db.Column(db.String(100), nullable=False)
+#     minsal = db.Column(db.Integer, nullable=False,default=0)
+#     maxsal = db.Column(db.Integer, nullable=False,default=0)
+#     applications = db.Column(db.Integer, nullable=False,default=0)
+#     description = db.Column(db.Text, nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+#     def __repr__(self):
+#         return f"Post('{self.title}', '{self.date_posted}')"
 

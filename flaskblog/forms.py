@@ -43,7 +43,7 @@ class UpdateAccountForm(FlaskForm):
     location = StringField('New Location')
     location_latlng = StringField('Location_id')
     skills = StringField('Skills')
-    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png','jpeg'])])
     submit = SubmitField('Update')
 
     def validate_username(self, username):

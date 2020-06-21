@@ -37,7 +37,7 @@
     .bg img {
       transform: rotateY(180deg);
       filter: brightness(35%);
-      height: 90vh;
+      height: 100vh;
       width: 100vw;
     }
 
@@ -142,7 +142,7 @@
       </div>
     </nav>
     <div class="heroinfo text-light">
-      <p class="display-1">JOBLO</p>
+      <p class="display-1">GOLOCAL</p>
       <h1>Jobs for everyone. </h1>
       <a class="getstarted" href="{{ url_for('register') }}"> Get Started </a>
     </div>
@@ -150,66 +150,6 @@
       <img src="../static/collage1.jpg" alt="">
     </div>
   </main>
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Special title treatment</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Special title treatment</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="pills">
-
-    </div>
-    <input type="text" id="check">
-    <button class="btn btn-info" onclick="getfn()">add</button>
-  </div>
-  <script>
-    $(document).ready(function () {
-      $('.carousel').carousel({
-        interval: 5000,
-        pause: false,
-      });
-    });
-    var listt = []
-
-    function end(ind) {
-      listt.splice(ind, 1);
-      render();
-    }
-
-    function getfn() {
-      var j = $('#check').val();
-      listt.push(j)
-      render();
-      $('#check').val('')
-    }
-
-    function render() {
-      var m = '';
-      for (let [index, val] of listt.entries()) {
-        m += `
-        <span class="ptext badge badge-primary ">${val}
-        &nbsp;&nbsp; <span onclick="end('${index}')">x</span>  
-        </span>
-        `;
-      }
-      $('.pills').html(m);
-    }
-  </script>
 </body>
 
 </html>

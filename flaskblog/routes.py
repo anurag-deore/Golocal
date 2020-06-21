@@ -1,10 +1,11 @@
 from flask import render_template,Response,jsonify, url_for, flash, redirect, request, abort,json
 from flaskblog import app, db, bcrypt
 from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm,FilterForm
-from flaskblog.models import User,Post
+from flaskblog.models import User,Chats
 from PIL import Image
 import secrets
 import math
+from sqlalchemy import and_,or_
 import os
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -26,7 +27,14 @@ def index():
         return redirect(url_for('home'))
     return render_template('index.html')
 
+@app.route("/map")
+def map():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    return render_template('index.html')
+
 @app.route("/home",methods=['GET','POST'])
+@login_required
 def home():
     posts=[]
     p1={}
@@ -35,23 +43,63 @@ def home():
         posts.clear()
         p1.clear()
         p2.clear()
-        p1['lat'],p1['lng']= str(current_user.location_latlng).split(",")
         data = request.form.get('sendskills')
         filters = data.split(',')
+        if len(filters) == 0 : filters = ''
         for f in filters:
             search = "%{}%".format(f)
             p = User.query.filter(User.skills.like(search)).all();
+            print(p)
             for k in p :
                 l = k.serialize()
-                # l['skills'] = l['skills'].split(",")
-                p2['lat'],p2['lng']= str(k.location_latlng).split(",")
-                l['distance']=getdistance(p1,p2) 
-                if l not in posts: 
+                if current_user.location_latlng != None and l['location_latlng'] != None:
+                    p1['lat'],p1['lng']= str(current_user.location_latlng).split(",")
+                    p2['lat'],p2['lng']= str(k.location_latlng).split(",")
+                    l['distance']=getdistance(p1,p2) 
+                l['url'] = 'user/'+l['username']
+                if l not in posts:
                     posts.append(l)
         return jsonify(posts)
     else:
         users = User.query.all()
         return render_template('home.html',posts=users)
+
+@app.route('/chat/new',methods=['POST'])
+@login_required
+def newchat():
+    chatarray =[]
+    if request.method == 'POST':
+        chatarray.clear()
+        message = request.form.get('message'),
+        sender = request.form.get('sender'),
+        receiver = request.form.get('receiver')
+        chat = Chats(
+            message = message, 
+            sender = sender ,
+            receiver = receiver)
+        db.session.add(chat)
+        db.session.commit()
+        # chats = Chats.query.filter(Chats.sender == sender,Chats.receiver == receiver).all()
+        chats = Chats.query.filter(or_(and_(Chats.sender==sender,Chats.receiver==receiver), \
+                                    and_(Chats.sender==receiver,Chats.receiver==sender)))
+        for chat in chats:
+            chatarray.append(chat.serialize())
+        return jsonify(chatarray)
+
+@app.route('/chat/get',methods=['POST'])
+@login_required
+def getchat():
+    chatarray =[]
+    if request.method == 'POST':
+        chatarray.clear()
+        sender = request.form.get('sender'),
+        receiver = request.form.get('receiver')
+        # chats = Chats.query.filter(Chats.sender == sender,Chats.receiver == receiver).all()
+        chats = Chats.query.filter(or_(and_(Chats.sender==sender,Chats.receiver==receiver), \
+                                    and_(Chats.sender==receiver,Chats.receiver==sender)))
+        for chat in chats:
+            chatarray.append(chat.serialize())
+        return jsonify(chatarray)
 
 
 @app.route("/about")
@@ -106,7 +154,6 @@ def save_picture(form_picture):
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
-
     return picture_fn
 
 
@@ -118,12 +165,15 @@ def account():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
             current_user.image_file = picture_file
-        if form.location.data == '' or form.location.data == ' ' or  form.location_latlng.data == '':
+        if form.location.data == '' or form.location.data == ' ':
             pass
         else:
-            current_user.location = form.location.data
+            current_user.location = form.location_latlng.data
+        if form.location_latlng.data == '':
+            pass
+        else:
+            current_user.location = form.location_latlng.data
             current_user.location_latlng = form.location_latlng.data
-            print(form.location_latlng.data,"done")
         current_user.username = form.username.data
         current_user.email = form.email.data
         current_user.skills = form.skills.data
@@ -139,75 +189,66 @@ def account():
                            image_file=image_file, form=form)
                         
 
-@app.route("/post/new", methods=['GET', 'POST'])
+@app.route("/plotmap",  methods=['POST'])
+def plotmap():
+    if request.method == 'POST':
+        p1={}
+        p2={}
+        data = request.form.get('filter')
+        p1['lat']=request.form.get('x')
+        p1['lng']=request.form.get('y')
+        a = []
+        if (data == None  or len(data) == 0) : data = ''
+        filters = data.split(',')
+        for f in filters:
+            search = "%{}%".format(f)
+            p = User.query.filter(User.skills.like(search)).all();
+            for k in p :
+                l = k.serialize()
+                if current_user.location_latlng != None and l['location_latlng'] != None:
+                    p2['lat'],p2['lng']= str(k.location_latlng).split(",")
+                    l['distance']=getdistance(p1,p2) 
+                l['url'] = 'user/'+l['username']
+                if l not in a:
+                    a.append(l)
+                a.append(current_user.serialize())
+        return render_template("about.html",a=a)
+
+@app.route("/search",  methods=['POST'])
 @login_required
-def new_post():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(
-            title=form.title.data, 
-            location=form.location.data, 
-            minsal=form.minsal.data, 
-            maxsal=form.maxsal.data, 
-            description=form.description.data, 
-            author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post has been created!', 'success')
-        return redirect(url_for('home'))
-    return render_template('create_post.html', title='New Post',
-                           form=form, legend='New Post')
-@app.route("/post/<int:post_id>")
-def post(post_id):
-    post = Post.query.get_or_404(post_id)
-    return render_template('post.html', title=post.title, post=post)
-@app.route("/post")
-def post_id():
-    return render_template('post.html')
+def Search():
+    posts=[]
+    p1={}
+    p2={}
+    if request.method == 'POST':
+        posts.clear()
+        p1.clear()
+        p2.clear()    
+        data = request.form.get('searchString')
+        search = "{}%".format(data)
+        p = User.query.filter(User.username.like(search)).all();
+        for k in p :
+            l = k.serialize()
+            if current_user.location_latlng != None and l['location_latlng'] != None:
+                p1['lat'],p1['lng']= str(current_user.location_latlng).split(",")
+                p2['lat'],
+                p2['lng']= str(k.location_latlng).split(",")
+                l['distance']=getdistance(p1,p2) 
+            l['url'] = 'user/'+l['username']
+            if l not in posts:
+                posts.append(l)
+        return jsonify(posts)
+    else:
+        users = User.query.all()
+        return render_template('home.html',posts=users)
 
-
-@app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
-@login_required
-def update_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
-        abort(403)
-    form = PostForm()
-    if form.validate_on_submit():
-        post.title = form.title.data 
-        post.location = form.location.data 
-        post.minsal = form.minsal.data 
-        post.maxsal = form.maxsal.data 
-        post.description = form.description.data 
-        db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('home'))
-    elif request.method == 'GET':
-        form.title.data = post.title
-        form.location.data = post.location
-        form.minsal.data = post.minsal
-        form.maxsal.data = post.maxsal
-        form.description.data = post.description
-    return render_template('create_post.html', title='Update Post',
-                           form=form, legend='Update Post')
-
-
-@app.route("/post/<int:post_id>/delete", methods=['POST'])
-@login_required
-def delete_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
-        abort(403)
-    db.session.delete(post)
-    db.session.commit()
-    flash('Your post has been deleted!', 'success')
-    return redirect(url_for('home'))
 
 
 @app.route("/user/<string:username>")
+@login_required
 def user_posts(username):
     # page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user)\
-        .order_by(Post.date_posted.desc())
-    return render_template('user_posts.html', posts=posts, user=user)
+    # posts = Post.query.filter_by(author=user)\
+    #     .order_by(Post.date_posted.desc())
+    return render_template('user_posts.html',post=user)
