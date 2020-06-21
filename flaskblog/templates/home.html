@@ -228,6 +228,7 @@
   function end(skillindex) {
     userskills.splice(skillindex, 1)
     $('input[name="filterof"]').val(userskills.toString());
+    $('input[name="filter"]').val(userskills.toString());
     skills(userskills)
     sendajax();
   }
@@ -235,7 +236,7 @@
   function getfn(j) {
     userskills.push(j)
     $('input[name="filterof"]').val(userskills.toString());
-    $('.oohe').val(userskills.toString());
+    $('input[name="filter"]').val(userskills.toString());
     skills(userskills)
     $('#myInput').val('');
     sendajax();

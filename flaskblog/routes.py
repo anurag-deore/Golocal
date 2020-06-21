@@ -199,6 +199,7 @@ def plotmap():
         p1['lng']=request.form.get('y')
         a = []
         if (data == None  or len(data) == 0) : data = ''
+        print(data)
         filters = data.split(',')
         for f in filters:
             search = "%{}%".format(f)
