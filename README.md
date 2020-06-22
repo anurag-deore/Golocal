@@ -16,7 +16,7 @@ Then go on installing the *requirements.txt* file
 ```
 $ pip install -r requirements.txt
 ```
-Now, run python shell and run following commands
+Now, from python shell and run following commands
 ```
 $ python
 >>> from flaskblog import db
