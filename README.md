@@ -23,8 +23,9 @@ $ python
 >>> db.create_all()
 >>>
 ```
-You can ignore the ```SQLAlchemy Track Modifications Warning```
-This will create a **site.db** as your local database
+You can ignore the ```SQLAlchemy Track Modifications Warning``` in th above step.
+
+You will now have a **site.db**  file as your local database
 Alternatively you can use mysql by altering comments  for these lines in ```flaskblog/__init__.py``` and again running the previous step
 ```
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
