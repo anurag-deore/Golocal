@@ -1,6 +1,6 @@
 # Golocal
  Flask based Web Platform for local worker to find jobs made during Hackjaipur hackathon. 
- Deployed on https://g0l0cal.herokuapp.com
+ <br>Live on https://g0l0cal.herokuapp.com
  
  # Installation
  > ### Prerequisites
