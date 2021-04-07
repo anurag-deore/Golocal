@@ -62,7 +62,7 @@ def home():
         return jsonify(posts)
     else:
         users = User.query.all()
-        return render_template('home.html',posts=users)
+        return render_template('home1.html',posts=users)
 
 @app.route('/chat/new',methods=['POST'])
 @login_required

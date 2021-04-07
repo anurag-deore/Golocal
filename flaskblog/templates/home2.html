@@ -1,0 +1,365 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  .info:hover{
+    border-bottom: 0.5px solid  rgb(209, 209, 209);
+    /* box-shadow: 5px 5px 5px rgb(209, 209, 209); */
+    box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  a{
+    text-decoration: none;
+  }
+
+  .contactnow{
+      border-color: #8B92DD;
+      background-color: white;
+      border-radius:20px 20px;
+      padding: 8px 10px;
+      color: #8B92DD;
+      font-size: 15px;
+      font-weight: 200;
+  }
+  .contactnow:hover{
+      background-color: #8B92DD;
+      color: white;
+  }
+
+</style>
+{% if current_user.location_latlng == None%}
+  {% set list1 = [22.923,73.9238] %}
+
+{% else %}
+{% set list1 =current_user.location_latlng.split(',') %}
+{% endif %}
+<div class="row ">
+  <div class="col-md-8 col-12 ">
+    <div class="d-block d-md-none ">
+      <form  method="POST" action="{{url_for('plotmap')}}">
+        <input class="d-none" type="text" name="filter" class="oohe">
+        <input class="d-none" type="text" name="x" value="{{list1[0] }}">
+        <input class="d-none" type="text" name="y" value="{{list1[1] }}">
+        <button {{ 'disabled' if current_user.location_latlng == None else '' }} type="submit" class="btn btn-block alert alert-warning">View On map ! </button>
+      </form>
+    </div>
+  </div>
+</div>
+<form action="" method="POST" id="skillform">
+  <input type="text" name="filterof" class="d-none">
+</form>
+<div class="row">
+  <div class="col-md-3 mt-3 mr-2">
+      <div class="card">
+        <div class="pt-4 sticky-top filter_sm">
+          <div class="border-0 border-md-1 p-3 rounded shadow-sm">
+            <span  class="d-block d-md-none float-right">
+              <i id="closefilter" style="font-size:35px;" class="material-icons material-icons-outlined">clear</i>
+            </span>
+            <h4>Filters</h4>
+            <hr>
+            <p><a class="float-right" href="/account">change</a></p>
+            <p>Your Location </p>
+            <div class="d-none d-md-block ">
+              <form  method="POST" action="{{url_for('plotmap')}}">
+                <input class="d-none" type="text" name="filter" class="oohe">
+                <input class="d-none" type="text" name="x" value="{{list1[0] }}">
+                <input class="d-none" type="text" name="y" value="{{list1[1] }}">
+                <button {{ 'disabled' if current_user.location_latlng == None else '' }} type="submit" class="btn btn-block alert alert-warning">View On map ! </button>
+              </form>
+            </div>
+            <p>Filter Skills</p>
+            <div class="showpill"></div>
+            <form action="" method="POST" id="skillform">
+              <input type="text" name="filterof" class="d-none">
+            </form>
+            <!-- <input type="text" name="filterkskill" id="myInput" class="form-control" onkeyup="myFunction()"> -->
+            <div class="opts" style="height: auto;max-height: 250px; overflow-y: scroll;">
+            </div>
+          </div>
+          <br>
+        </div>
+      </div>
+  </div>
+  <div class="col-md-8 col-12">
+
+<div class="newPage" style="width: 100%;">
+
+</div>
+</div>
+</div>
+
+<script>
+  //   $(document).ready(function () {
+  //   var o = []
+  //   o == '' ? userskills = [] : userskills = o.split(",")
+  //   skills(userskills)
+  //   sendajax();
+  // });
+
+  function sendajax() {
+    // alert('heyyyyyyyyyyyyyyyyy')
+    if ('{% if current_user.location == None %}1{% else %}0{% endif %}' == 1) {
+      $('.newPage').html(`
+      <div class="alert alert-receiver">Please Update your location First <a href="{{url_for('account')}}">Here</a></div>
+      `);
+    } else {
+      var sendskills = $('input[name="filterof"]').val();
+  }
+  $.ajax({
+    type: "POST",
+        url: "{{ url_for('home')}}",
+        dataType: "json",
+        data: {
+          sendskills: sendskills
+        },
+        success: function (response) {
+          response.sort(dynamicsort("distance", "asc"))
+          console.log(response)
+          var g = '';
+          response.forEach(element => {
+            if (element.id == '{{current_user.id}}' && response.length == 1) {
+              g += `<span class="text-center">No Users Found</span>`;
+            } else if (element.id == '{{current_user.id}}') {
+              null
+            } else {
+              g +=`
+              <div class="row info mt-5 pb-5">
+        <div class="col-md-2 m-2">
+                <img src="../static/profile_pics/${element.image_file}"  class="card-img"
+                  alt="user pic">
+            </div>
+        <div class="col-md-6 mt-1">
+              <h3>${element.username}</h3>
+              <p>${element.email} &nbsp; &nbsp;<img src="../static/loc.svg" width="12px" height="15px">&nbsp;${element.location}</p>`
+              if (element.skills == '') {
+                g += `<small>No Skills Added</small>`;
+              }
+              else {
+                g+=`<small>Skills:&nbsp;`;
+                for (let i = 0; i < element.skills.length; i++) {
+                  g += element.skills[i] + `, &nbsp;`;
+                }
+                g+=`</small>`;
+              }
+        g+=`</div>
+        <div class="col-md-3 mt-4">
+            <a href="#" class="contactnow btn float-right" >Contact Now</a>
+        </div>
+    </div>`
+            }
+          });
+          $('.newPage').html(g);
+          console.log(g)
+        }
+       
+  });
+} 
+
+function dynamicsort(property, order) {
+    var sort_order = 1;
+    if (order === "desc") {
+      sort_order = -1;
+    }
+    return function (a, b) {
+      if (a[property] < b[property]) {
+        return -1 * sort_order;
+      } else if (a[property] > b[property]) {
+        return 1 * sort_order;
+      } else {
+        return 0 * sort_order;
+      }
+    }
+  }
+
+  $('#closefilter').click(function (e) { 
+    e.preventDefault();
+    $('.filter_sm').fadeOut();
+  });
+  $('#openfilter').click(function (e) { 
+    e.preventDefault();
+    $('.filter_sm').fadeIn();
+  });
+
+  var notaddedskills = [];
+  var userskills = []
+  var allskills = [
+        'mechanic','carpenter','electrician','plumber','welder','cleaner'
+    ]
+
+  function skills(userskills) {
+    notaddedskills = allskills.filter(function (obj) {
+      return userskills.indexOf(obj) == -1;
+    });
+    userskills.length <= 0 ? $('.showpill').html('') :
+      renderaddedskills(userskills)
+    notaddedskills.length <= 0 ? $('.opts').html('All skills already added !') :
+      renderNOTaddedskills(notaddedskills)
+  }
+
+  function renderaddedskills(userskills) {
+    var m = '';
+    var n = '';
+    for (let [index, val] of userskills.entries()) {
+      m += `<span class="ptext badge ">${val}&nbsp;&nbsp; <span onclick="end('${index}')">x</span></span>`;
+      n += `<span class="ptext badge ">${val}&nbsp;&nbsp;</span>`;
+    }
+    $('.showpill').html(m);
+  }
+
+  function renderNOTaddedskills(notaddedskills) {
+    var k = '';
+    for (let [index, val] of notaddedskills.entries()) {
+      // k += ` <li title="Add ${val}" onclick="getfn('${val}')"><a href="#">${val} </a></li>`;
+      k += `<div class="form-check">
+  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onclick="getfn('${val}')">
+  <label class="form-check-label" for="flexCheckDefault">${val}</label>
+</div>`;
+    }
+    $('.opts').html(k);
+  }
+
+  function end(skillindex) {
+    userskills.splice(skillindex, 1)
+    $('input[name="filterof"]').val(userskills.toString());
+    skills(userskills)
+    sendajax();
+  }
+
+  function getfn(j) {
+    userskills.push(j)
+    $('input[name="filterof"]').val(userskills.toString());
+    $('.oohe').val(userskills.toString());
+    skills(userskills)
+    $('#myInput').val('');
+    sendajax();
+  }
+
+  $('#clearsearch').click(function (e) {
+    e.preventDefault();
+   
+    if ('{% if current_user.location == None %}1{% else %}0{% endif %}' == 1) {
+      $('.sea').html(`
+      <div class="alert alert-receiver">Please Update your location First</div>
+      `);
+    } else if ($('#searchbar').val() == '') {} else {
+      sendajax();
+    }
+    $('#searchbar').val('');
+  });
+
+  function myFunction() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById('myInput');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myUL");
+    li = ul.getElementsByTagName('li');
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < li.length; i++) {
+      a = li[i].getElementsByTagName("a")[0];
+      txtValue = a.textContent || a.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+
+  $(document).ready(function () {
+    var o = []
+    o == '' ? userskills = [] : userskills = o.split(",")
+    skills(userskills)
+    sendajax();
+  });
+
+
+
+  function loadCharacters(searchString) {
+
+    $.ajax({
+      type: "POST",
+      url: "{{ url_for('Search')}}",
+      dataType: "json",
+      data: {
+        searchString: searchString
+      },
+      success: function (response) {
+        response.sort(dynamicsort("distance", "asc"))
+        var g = '';
+        response.length <= 0 ?
+          (g += `
+        <div class="w-100 d-flex justify-content-center">
+        <div class="card d-flex bg-light flex-row align-items-center justify-content-around" style="height:100px;width:50%">
+          <i class="material-icons material-icons-outlined" style="font-size:40px;color: rgb(153,4,255);">error_outline</i>
+          <div class="text-center">No Users Found</div>
+        </div>
+        </div>`) :
+          response.forEach(element => {
+            if (element.id == '{{current_user.id}}' && response.length == 1) {
+              g += `
+        <div class="w-100 d-flex justify-content-center">
+        <div class="card d-flex bg-light flex-row align-items-center justify-content-around" style="height:100px;width:50%">
+          <i class="material-icons material-icons-outlined" style="font-size:40px;color: rgb(153,4,255);">error_outline</i>
+          <div class="text-center">No Users Found</div>
+        </div>
+        </div>`;
+
+            } else if (element.id == '{{current_user.id}}') {
+              null
+            } else {
+              g += `<div class="p-3 mb-3 border rounded shadow-sm">
+                <div class="row pl-md-2">
+                  <div class="col-9 col-sm-9 col-md-10">
+                    <h5>${element.username}</h5>
+                    <article class="text-theme"><a
+                        href="${element.url}">${element.email}</a>
+                    </article>
+                  </div>
+                  <div class="col-3 col-sm-3 col-md-2 pl-sm-5 pl-0 pl-md-0 pl-lg-2">
+                    <img src="../static/profile_pics/${element.image_file}" class=" card-img"
+                      alt="user pic">
+                  </div>
+                </div>
+                <div class="pt-md-0 pt-2 card-text  d-flex align-items-center">
+                  <span
+                    class="material-icons material-icons-outlined card-icon pr-2 text-muted">location_on</span>${element.location}
+                </div>
+                <div class="row mt-3 ">
+                  <p class="m-0 col-3 col-sm-3 col-md-2 ">Skills</p>
+                  <div class="col-8">
+                    <div class="row"> `
+              if (element.skills == '') {
+                g += `<small >No Skills Added</small>`;
+              } else {
+                for (let i = 0; i < element.skills.length; i++) {
+                  g += `<span class="pskilltext badge ">` + element.skills[i] + `</span>`;
+                }
+              }
+              g += `</div>
+                    </div>
+                    </div>
+                    <p class="py-2 pr-0">
+                      <a href="${element.url}" class="contactnow btn float-right" >Contact Now</a>
+                    </p>
+                  </div>`
+            }
+          });
+        $('.sea').html(g);
+      }
+    });
+  }
+
+  $('#searchbarbtn').click(function (e) {
+    e.preventDefault();
+    if ('{% if current_user.location == None %}1{% else %}0{% endif %}' == 1) {
+      $('.sea').html(`
+      <div class="alert alert-receiver">Please Update your location First</div>
+      `);
+    } else if ($('#searchbar').val() == '') {} else {
+      const searchString = $('#searchbar').val();
+      loadCharacters(searchString.toLowerCase());
+    }
+  });
+</script>
+
+{% endblock content %}

@@ -1,16 +1,20 @@
 body {
-  font-family: "Inter", sans-serif;
-  /* font-family: "Museo Sans Rounded 300", sans-serif; */
-  font-weight: lighter;
+  font-family: "DM sans", sans-serif;
+  color: #2f2e41;
 }
+.btn-theme {
+  background-color: rgb(105, 97, 255);
+  color: white;
+}
+
 .ptext {
   font-size: 16px;
   font-weight: lighter;
   cursor: pointer;
   margin: 2px;
   padding: 5px;
-  color: purple !important;
-  background-color: rgb(235, 191, 235);
+  color: white !important;
+  background-color: rgb(105, 97, 255);
 }
 
 .pskilltext {
@@ -20,8 +24,8 @@ body {
   width: max-content;
   margin: 2px;
   padding: 2px 8px;
-  color: rgb(154, 8, 235) !important;
-  background-color: rgb(244, 227, 252);
+  color: rgb(105, 97, 255) !important;
+  background-color: rgb(194, 193, 255);
 }
 .psuertext strong {
   padding: 0;
@@ -35,12 +39,12 @@ body {
   width: max-content;
   margin: 5px;
   padding: 5px 15px;
-  color: rgb(154, 8, 235) !important;
-  background-color: rgb(244, 227, 252);
+  color: rgb(105, 97, 255) !important;
+  background-color: rgb(194, 193, 255);
 }
 .dropdown-menu {
-  margin-top: 42px !important;
-  margin-right: -65px !important;
+  top: 3.5rem !important;
+  right: 0rem !important;
 }
 .stick-filter {
   margin-top: 50px;
@@ -65,13 +69,13 @@ body {
   font-size: 14px;
 
   color: #000;
-  background-color: rgb(244, 227, 252);
+  background-color: rgb(194, 193, 255);
   border: none;
 }
 
 .text-theme a,
 .text-theme {
-  /* color: rgb(154, 8, 235); */
+  /* color: rgb(105, 97, 255); */
   color: black;
   font-size: 14px;
   text-decoration: none;
@@ -84,56 +88,55 @@ body {
 .btn-outline-theme:not(:disabled):not(.disabled).active,
 .btn-outline-theme:not(:disabled):not(.disabled):active,
 .show > .btn-outline-theme.dropdown-toggle {
-  border-color: rgb(154, 8, 235);
-  background-color: rgb(154, 8, 235);
+  border-color: rgb(105, 97, 255);
+  background-color: rgb(105, 97, 255);
   color: floralwhite;
 }
 .btn-outline-theme:focus {
-  box-shadow: 0 0 0 0.2rem rgba(154, 8, 235, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(105, 97, 255, 0.5);
 }
 
 .btn-outline-theme {
-  color: rgb(154, 8, 235);
-  border-color: rgb(154, 8, 235);
+  color: rgb(105, 97, 255);
+  border-color: rgb(105, 97, 255);
   text-decoration: none;
 }
 
 .custom-control-input:active {
-  box-shadow: 0 0 0 0.2rem rgba(154, 4, 255, 0.001);
+  box-shadow: 0 0 0 0.2rem rgba(105, 97, 255, 0.001);
   background-color: #cb46f3;
 }
 .custom-control-input:checked ~ .custom-control-label::before {
   color: #fff;
   border-color: #cb46f3;
-  background-color: rgb(154, 4, 255);
+  background-color: rgb(105, 97, 255);
 }
 
 .contactnow {
-  background-color: rgb(244, 227, 252);
+  background-color: rgb(105, 97, 255);
   font-size: 15px;
   font-weight: bold;
   padding: 5px;
-  color: rgb(154, 4, 255);
+  color: white;
 }
 .contactnow:hover {
-  color: rgb(154, 8, 235);
+  color: lavenderblush;
 }
 .contactnow:active {
   border: 0;
-  box-shadow: 0 0 0 0.2rem rgba(154, 4, 255, 0.001);
+  box-shadow: 0 0 0 0.2rem rgba(105, 97, 255, 0.001);
 }
 .contactnow:focus {
   border: 0;
-  box-shadow: 0 0 0 0.2rem rgba(154, 4, 255, 0.3);
-  color: rgb(154, 4, 255);
+  box-shadow: 0 0 0 0.2rem rgba(105, 97, 255, 0.3);
+  color: rgb(105, 97, 255);
 }
 .card-text {
   font-size: 14px;
   color: #666;
 }
 .card-img {
-  height: 65px;
-  width: 65px;
+  width: 100%;
   border-radius: 0.25rem !important;
 }
 .card-icon {
@@ -149,12 +152,13 @@ body {
   color: rgb(243, 206, 247);
 }
 .navbar-brand {
+  font-family: "Poppins", sans-serif;
   font-weight: 900;
   font-size: 30px;
 }
 .navbar {
   padding: 0.3rem 0.2rem 0.3rem 1rem;
-  background-color: rgb(120, 3, 133);
+
   /* border-top-right-radius: 200px;
   border-bottom-right-radius: 200px; */
   margin-bottom: 25px;
@@ -179,15 +183,15 @@ body {
 .sidebar-btn {
   display: none;
 }
-.filter_sm{
+.filter_sm {
   display: block;
 }
-#mapid{
-  height: 600px
+#mapid {
+  height: 600px;
 }
 @media screen and (max-width: 767px) {
-  #mapid{
-    height: 200px
+  #mapid {
+    height: 200px;
   }
   .filter_sm {
     display: none;
@@ -202,7 +206,7 @@ body {
   .nav-pills .nav-item {
     width: 50%;
   }
-  .navbar{
+  .navbar {
     margin-bottom: 10px;
   }
   .navbar-brand {
@@ -283,7 +287,7 @@ body {
     font-size: 12px;
     padding: 3px 8px;
     color: #000;
-    background-color: rgb(244, 227, 252);
+    background-color: rgb(194, 193, 255);
     border: none;
   }
 }

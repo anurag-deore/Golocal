@@ -54,7 +54,7 @@
     </div>
     <div class="col-md-10 col-sm-9 col-7 col-lg-9 pl-2">
         <h4>{{current_user.username}}</h4>
-        <p>{{ current_user.email }} </p>
+        <p>{{ current_user.category }} </p>
     </div>
 </div>
 <hr>
@@ -159,8 +159,8 @@
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h5 class="modal-title" id="deleteModalLabel">Add skills to your profile.</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class=" btn btn-default" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="font-size: 20px;">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -192,7 +192,7 @@
 <script src="https://cdn.jsdelivr.net/npm/places.js@1.19.0"></script>
 <script>
     var allskills = [
-        'mechanic', 'carpenter', 'electrician', 'plumber', 'welder', 'cleaner'
+        'mechanic', 'carpenter', 'electrician', 'plumber', 'welder', 'cleaner','garbage cleaners','shifter/movers'
     ]
     var notaddedskills = [];
     var userskills = []

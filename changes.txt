@@ -1,0 +1,40 @@
+Features: 
+    Rate review 
+    Filter on map view
+    Multi Language Support - ###
+    Register as worker and user
+    Get city name instead of latlong - api
+    save for later/bookmark
+
+Changes in Files :
+    user_posts.html => user_detail.html => add rating/bookmark
+    account.html => add address text
+
+new pages:
+    worker_home.html
+    user_home.html
+    chats.html (both)
+    bookmarks.html
+    map_search.html (refer about.html )
+    static select Search Type page.html
+
+
+
+General :
+Login Page #
+Reg Page #
+
+User 
+page 0 : Select Search Type % - static page
+page 1 : Simple Search % - select all workers + filter(data table)  - ? ?
+page 2 : Map Search % - select all worker + plot - Soumya
+Page 3 : Profile % - (Get city name instead of latlong - api) - Aniket
+Page 4 : Chats  % - (contact now => chat now) - Anurag
+Page 5 : Bookmark Page  %  - Prajakta (rating,bookmark)
+
+Worker
+Page 1 : Profile % - (Get city name instead of latlong - api) - Aniket
+Page 2 : Chats % - Anurag
+
+
+Global count of each skill people
